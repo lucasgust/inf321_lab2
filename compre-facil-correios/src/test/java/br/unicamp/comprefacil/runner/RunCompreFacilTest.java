@@ -1,5 +1,4 @@
-package br.unicamp.exemplo.runner;
-
+package br.unicamp.comprefacil.runner;
 
 import org.junit.runner.RunWith;
 
@@ -9,9 +8,9 @@ import cucumber.api.junit.Cucumber;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         plugin = { "pretty", "html:target/cucumber" },
-        glue = "br.unicamp.exemplo.steps",
-        features = "classpath:features/Calculadora.feature"
+        glue = "br.unicamp.comprefacil.steps",
+        features = "classpath:features/CompreFacil.feature"
 )
-public class RunCalculadoraTest {
-}
+public class RunCompreFacilTest {
 
+}
