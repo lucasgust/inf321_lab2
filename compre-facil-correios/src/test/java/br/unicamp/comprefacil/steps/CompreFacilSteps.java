@@ -43,13 +43,13 @@ public class CompreFacilSteps {
     @Then("Send XML for integrating with Correios API")
     public void send_XML_to_correios_api(int result) throws Throwable {
     	//System should send the required info for integrating with Correios API
-    	//Gerar XML - JDOM?
+    	//XML
     }
     
     @Then("Receive XML from Correios API")
     public void receive_XML_to_correios_api(int result) throws Throwable {
     	//System Should return correct date and price of deliver presented by the API
-    	//XML - JDOM?
+    	//XML
     	dadosEntrega = new DadosEntregaCorreiosTO();
     }
     
