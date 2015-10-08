@@ -1,10 +1,16 @@
 package br.unicamp.comprefacil.bo;
 
+import com.google.gson.Gson;
+
 import br.unicamp.comprefacil.dao.CorreiosDAO;
 import br.unicamp.comprefacil.to.DadosEntregaCorreiosTO;
+import br.unicamp.comprefacil.to.EnderecoTO;
 import br.unicamp.comprefacil.to.EntregaTO;
 
 public class CorreiosBO {
+	
+	private CorreiosDAO dao = new CorreiosDAO();
+	private Gson gson = new Gson();
 
 	public DadosEntregaCorreiosTO buscarValorEPrazo(EntregaTO dadosParaEntrega) {
 
@@ -20,7 +26,6 @@ public class CorreiosBO {
 
 		try {
 
-			CorreiosDAO dao = new CorreiosDAO();
 			response = dao.buscarValorEPrazo(dadosParaEntrega);
 
 			indexValInicial = response.indexOf("<Valor>");
@@ -43,4 +48,32 @@ public class CorreiosBO {
 		return retornoCorreios;
 	}
 
+	public EnderecoTO validarCEP(String cep) {
+		EnderecoTO toEndereco = null;
+		
+		try {
+			// validar se CEP foi informado
+			if (cep == null || cep.trim().equals("")) {
+				throw new Exception("O campo CEP não foi informado.");
+			}
+			
+			// validar se CEP é um número inteiro
+			Integer.parseInt(cep);
+			
+			toEndereco = gson.fromJson(dao.validarCep(cep), EnderecoTO.class);
+			
+			// validar se CEP foi encontrado
+			if (toEndereco.getCep() == null) {
+				toEndereco = null;
+				throw new Exception("O CEP informado não foi encontrado.");
+			}
+		} catch (Throwable e) {
+			if (e instanceof NumberFormatException) {
+				e = new Exception("O CEP informado é inválido. O formato correto é compsoto por {8} dígitos.");
+			}
+			e.printStackTrace();
+		}
+		
+		return toEndereco;
+	}
 }

@@ -1,6 +1,6 @@
 Feature: Freight Calculator
 	As a User
-  	I want to use know the price and how many days to receive my product
+  	I want to inform my zip code to know the price and how many days to receive my product
   	So that I do not need to calculate myself
 
 Scenario Outline: Calculating freight price - API Integration
@@ -50,3 +50,43 @@ Scenario Outline: Calculating freight price and deadline - API Integration
 	|		   |		|40010	   |13495-000 |13417-780  |100	  |2		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010  |	16,50	|	1		|
 	|		   |		|40010	   |13495-000 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010  |	16,50	|	1		|	
 	|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010  |	16,50	|	1		|
+	
+Scenario Outline: Getting address - API Integration
+	Given I have a valid and registered zip code <cep>
+	When I press button to search
+	And system connects to Correios API
+	And system sends the file with the mandatory tag <cep>
+	Then Correios API returns <cep> <logradouro> <complemento> <bairro> <localidade> <uf> <ibge> <gia>
+
+	Examples: 
+	|cep		|logradouro			|complemento				|bairro		|localidade		|uf	|ibge	|gia	|
+	|01001000	|Praça da Sé		|lado ímpar					|Sé			|São Paulo		|SP	|3550308|1004	|
+	|01311300	|Avenida Paulista	|de 1867 ao fim - lado ímpar|Bela Vista	|São Paulo		|SP	|3550308|1004	|
+	|22041080	|Rua Anita Garibaldi|							|Copacabana	|Rio de Janeiro	|RJ	|3304557|		|
+	
+Scenario: Empty zip code 
+	Given I do not have a zip code <cep> 
+	When I press button to search 
+	Then should show an error with a message: 
+	"""
+	O campo CEP não foi informado.
+	"""
+	
+Scenario: Invalid zip code 
+	Given I have an invalid zip code <cep> 
+	When I press button to search 
+	Then should show an error with a message: 
+	"""
+	O CEP informado é inválido. O formato correto é compsoto por {8} dígitos.
+	"""
+	
+Scenario: Address not found 
+	Given I have a valid but not registered zip code <cep> 
+	When I press button to search 
+	And system connects to Correios API
+	And system sends the file with the mandatory tag <cep>
+	And system returns an empty address object
+	Then should show an error with a message: 
+	"""
+	O CEP informado não foi encontrado.
+	"""
