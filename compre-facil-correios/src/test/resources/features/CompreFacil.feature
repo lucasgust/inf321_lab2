@@ -60,8 +60,8 @@ Scenario Outline: Getting address - API Integration
 
 	Examples: 
 	|cep		|logradouro			|complemento				|bairro		|localidade		|uf	|ibge	|gia	|
-	|01001000	|Praça da Sé		|lado ímpar					|Sé			|São Paulo		|SP	|3550308|1004	|
-	|01311300	|Avenida Paulista	|de 1867 ao fim - lado ímpar|Bela Vista	|São Paulo		|SP	|3550308|1004	|
+	|01001000	|Praï¿½a da Sï¿½		|lado ï¿½mpar					|Sï¿½			|Sï¿½o Paulo		|SP	|3550308|1004	|
+	|01311300	|Avenida Paulista	|de 1867 ao fim - lado ï¿½mpar|Bela Vista	|Sï¿½o Paulo		|SP	|3550308|1004	|
 	|22041080	|Rua Anita Garibaldi|							|Copacabana	|Rio de Janeiro	|RJ	|3304557|		|
 	
 Scenario: Empty zip code 
@@ -69,7 +69,7 @@ Scenario: Empty zip code
 	When I press button to search 
 	Then should show an error with a message: 
 	"""
-	O campo CEP não foi informado.
+	O campo CEP nï¿½o foi informado.
 	"""
 	
 Scenario: Invalid zip code 
@@ -77,7 +77,7 @@ Scenario: Invalid zip code
 	When I press button to search 
 	Then should show an error with a message: 
 	"""
-	O CEP informado é inválido. O formato correto é compsoto por {8} dígitos.
+	O CEP informado ï¿½ invï¿½lido. O formato correto ï¿½ compsoto por {8} dï¿½gitos.
 	"""
 	
 Scenario: Address not found 
@@ -88,5 +88,5 @@ Scenario: Address not found
 	And system returns an empty address object
 	Then should show an error with a message: 
 	"""
-	O CEP informado não foi encontrado.
+	O CEP informado nï¿½o foi encontrado.
 	"""
