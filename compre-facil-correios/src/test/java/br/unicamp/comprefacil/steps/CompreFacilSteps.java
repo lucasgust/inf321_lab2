@@ -78,15 +78,21 @@ public class CompreFacilSteps {
     }
     
     // TODO: seguir esses caras
-    
-    @Given("^Items <Wheight> <Width> <Height> <Length>$")
-    public void items_Wheight_Width_Height_Length() throws Throwable {
+
+    @Given("^All items from sales order are settled$")
+    public void all_items_from_sales_order_are_settled() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^User press button to calculate$")
-    public void user_press_button_to_calculate() throws Throwable {
+    @Given("^User types \"([^\"]*)\"$")
+    public void user_types(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^User press button to calculate freight$")
+    public void user_press_button_to_calculate_freight() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
@@ -97,134 +103,68 @@ public class CompreFacilSteps {
         throw new PendingException();
     }
 
-    @When("^system sends the file with all mandatory tags   (\\d+) (\\d+)-(\\d+)$")
-    public void system_sends_the_file_with_all_mandatory_tags(int arg1, int arg2, int arg3) throws Throwable {
+    @When("^system sends the file with all mandatory tags \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) \"([^\"]*)\" (\\d+) \"([^\"]*)\"$")
+    public void system_sends_the_file_with_all_mandatory_tags(String arg1, String arg2, String arg3, String arg4, String arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11, String arg12, int arg13, String arg14) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^(\\d+)-(\\d+) (\\d+) (\\d+) (\\d+)$")
-    public void (int arg1, int arg2, int arg3, int arg4, int arg5) throws Throwable {
+    @Then("^correios API returns \"([^\"]*)\" (\\d+),(\\d+) (\\d+) (\\d+),(\\d+) (\\d+),(\\d+) (\\d+),(\\d+) \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"$")
+    public void correios_API_returns(String arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, String arg11, String arg12, String arg13, String arg14) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^(\\d+) (\\d+) (\\d+) N (\\d+) N$")
-    public void n_N(int arg1, int arg2, int arg3, int arg4) throws Throwable {
+    @Given("^at least one field is not valid$")
+    public void at_least_one_field_is_not_valid() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Then("^system connects to Correios API$")
-    public void system_connects_to_Correios_API() throws Throwable {
+    @Given("^I have a valid and registered zip code \"([^\"]*)\"$")
+    public void i_have_a_valid_and_registered_zip_code(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Then("^correios API returns (\\d+) (\\d+),(\\d+) (\\d+),(\\d+) (\\d+),(\\d+) (\\d+),(\\d+)$")
-    public void correios_API_returns(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8, int arg9) throws Throwable {
+    @When("^system sends the file with the mandatory tag \"([^\"]*)\"$")
+    public void system_sends_the_file_with_the_mandatory_tag(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Given("^User types the (\\d+)$")
-    public void user_types_the(int arg1) throws Throwable {
+    @Then("^ViaCEP API returns \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" (\\d+)$")
+    public void viacep_API_returns(String arg1, String arg2, String arg3, String arg4, String arg5, String arg6, String arg7, int arg8) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Given("^System provides (\\d+)$")
-    public void system_provides(int arg1) throws Throwable {
+    @Then("^ViaCEP API returns \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" $")
+    public void viacep_API_returns(String arg1, String arg2, String arg3, String arg4, String arg5, String arg6, String arg7) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^System connects to Correios API$")
-    public void system_connects_to_Correios_API() throws Throwable {
+    @Given("^I do not have a zip code$")
+    public void i_do_not_have_a_zip_code() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Then("^Correios API returns (\\d+) (\\d+) S S$")
-    public void correios_API_returns_S_S(int arg1, int arg2) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @When("^system sends the file with all mandatory tags  $")
-    public void system_sends_the_file_with_all_mandatory_tags() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @When("^(\\d+) (\\d+)-(\\d+) (\\d+)-(\\d+) (\\d+) (\\d+) (\\d+)$")
-    public void (int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, int arg7, int arg8) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Then("^Correios API returns (\\d+),(\\d+) and (\\d+)$")
-    public void correios_API_returns_and(int arg1, int arg2, int arg3) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Given("^I have a valid and registered zip code (\\d+)$")
-    public void i_have_a_valid_and_registered_zip_code(int arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @When("^system sends the file with the mandatory tag (\\d+)$")
-    public void system_sends_the_file_with_the_mandatory_tag(int arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Then("^Correios API returns (\\d+) Pra�a da S� lado �mpar S� S�o Paulo SP (\\d+) (\\d+)$")
-    public void correios_API_returns_Pra_a_da_S_lado_mpar_S_S_o_Paulo_SP(int arg1, int arg2, int arg3) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Then("^Correios API returns (\\d+) Avenida Paulista de (\\d+) ao fim - lado �mpar Bela Vista S�o Paulo SP (\\d+) (\\d+)$")
-    public void correios_API_returns_Avenida_Paulista_de_ao_fim_lado_mpar_Bela_Vista_S_o_Paulo_SP(int arg1, int arg2, int arg3, int arg4) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Then("^Correios API returns (\\d+) Rua Anita Garibaldi  Copacabana Rio de Janeiro RJ (\\d+) $")
-    public void correios_API_returns_Rua_Anita_Garibaldi_Copacabana_Rio_de_Janeiro_RJ(int arg1, int arg2) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Given("^I do not have a zip code <cep>$")
-    public void i_do_not_have_a_zip_code_cep() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @Then("^should show an error with a message:$")
+    @Then("^should show an error with a message: \"([^\"]*)\"$")
     public void should_show_an_error_with_a_message(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Given("^I have an invalid zip code <cep>$")
-    public void i_have_an_invalid_zip_code_cep() throws Throwable {
+    @Given("^I have an invalid zip code \"([^\"]*)\"$")
+    public void i_have_an_invalid_zip_code(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Given("^I have a valid but not registered zip code <cep>$")
-    public void i_have_a_valid_but_not_registered_zip_code_cep() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @When("^system sends the file with the mandatory tag <cep>$")
-    public void system_sends_the_file_with_the_mandatory_tag_cep() throws Throwable {
+    @Given("^I have a valid but not registered zip code \"([^\"]*)\"$")
+    public void i_have_a_valid_but_not_registered_zip_code(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
@@ -234,6 +174,4 @@ public class CompreFacilSteps {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
-    
-
 }
