@@ -45,11 +45,9 @@ Scenario Outline: Getting address - API Integration
 	Examples:
 	|cep		|logradouro			|complemento				|bairro		|localidade		|uf	|ibge	|gia	|
 	|01001000	|Praca da Se		|lado impar					|Se			|Sao Paulo		|SP	|3550308|1004	|
-	|01311300	|Avenida Paulista	|de 1867 ao fim - lado impar|Bela Vista	|Sao Paulo		|SP	|3550308|1004	|
-	|22041080	|Rua Anita Garibaldi|							|Copacabana	|Rio de Janeiro	|RJ	|3304557|		|
 	
 Scenario: Empty zip code 
-	Given I do not have a zip code  
+	Given I do not have a zip code "<cep>"  
 	When I press button to search 
 	Then should show an error with a message: "O campo CEP nao foi informado."
 	

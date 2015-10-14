@@ -2,14 +2,14 @@ package br.unicamp.comprefacil.bo;
 
 import com.google.gson.Gson;
 
-import br.unicamp.comprefacil.dao.CorreiosDAO;
+import br.unicamp.comprefacil.dao.CorreiosImpl;
 import br.unicamp.comprefacil.to.DadosEntregaCorreiosTO;
 import br.unicamp.comprefacil.to.EnderecoTO;
 import br.unicamp.comprefacil.to.EntregaTO;
 
 public class CorreiosBO {
 	
-	private CorreiosDAO dao = new CorreiosDAO();
+	private CorreiosImpl impl = new CorreiosImpl();
 	private Gson gson = new Gson();
 
 	public DadosEntregaCorreiosTO buscarValorEPrazo(EntregaTO dadosParaEntrega) {
@@ -26,7 +26,7 @@ public class CorreiosBO {
 
 		try {
 
-			response = dao.buscarValorEPrazo(dadosParaEntrega);
+			response = impl.buscarValorEPrazo(dadosParaEntrega);
 
 			indexValInicial = response.indexOf("<Valor>");
 			indexValFinal = response.indexOf("</Valor>");
@@ -60,7 +60,7 @@ public class CorreiosBO {
 			// validar se CEP é um número inteiro
 			Integer.parseInt(cep);
 			
-			toEndereco = gson.fromJson(dao.validarCep(cep), EnderecoTO.class);
+			toEndereco = gson.fromJson(impl.validarCep(cep), EnderecoTO.class);
 			
 			// validar se CEP foi encontrado
 			if (toEndereco.getCep() == null) {
