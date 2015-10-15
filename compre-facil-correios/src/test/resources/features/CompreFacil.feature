@@ -10,6 +10,7 @@ Scenario Outline: Calculating freight and deadline - API Integration
 	And system connects to Correios API
 	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<sCepDestino>" <nVlPeso> <nCdFormato> <nVlComprimento> <nVlAltura> <nVlLargura> <nVlDiametro> "<sCdMaoPropria>" <nVlValorDeclarado> "<sCdAvisoRecebimento>"
 	Then correios API returns "<sCodigo>" <sValor> <sPrazoEntrega> <sValorMaoPropria> <sValorAvisoRecebimento> <sValorDeclarado> "<sEntregaDomiciliar>" "<sEntregaSabado>" "<sErro>" "<sMsgErro>"
+	And save data in database <sPrazoEntrega> <sValor>
 	
 	Examples:
 		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|sCodigo 		| sValor	| sPrazoEntrega | sValorMaoPropria | sValorAvisoRecebimento	| sValorDeclarado| sEntregaDomiciliar | sEntregaSabado | sErro | sMsgErro |

@@ -15,6 +15,7 @@ import br.unicamp.comprefacil.dao.CorreiosDAO;
 import br.unicamp.comprefacil.dao.DadosDeEntregaDAO;
 import br.unicamp.comprefacil.service.CorreiosService;
 import br.unicamp.comprefacil.service.impl.CorreiosServiceImpl;
+import br.unicamp.comprefacil.to.DadosEntregaCorreiosTO;
 import br.unicamp.comprefacil.to.EnderecoTO;
 import br.unicamp.comprefacil.to.EntregaTO;
 import cucumber.api.java.Before;
@@ -40,12 +41,12 @@ public class CompreFacilSteps {
 	
     @Before
     public void setUp() {
-//    	correiosDAOMock = Mockito.mock(CorreiosDAO.class);
-//    	dadosDeEntregaMock = Mockito.mock(DadosDeEntregaDAO.class);
+    	correiosDAOMock = Mockito.mock(CorreiosDAO.class);
+    	dadosDeEntregaMock = Mockito.mock(DadosDeEntregaDAO.class);
     	
     	correiosService = new CorreiosServiceImpl();
-//    	correiosService.setCorreiosDAO(correiosDAOMock);
-//    	correiosService.setDadosDeEntregaDAO(dadosDeEntregaMock);
+    	correiosService.setCorreiosDAO(correiosDAOMock);
+    	correiosService.setDadosDeEntregaDAO(dadosDeEntregaMock);
     	
     	throwable = null;
     	todosItensDefinidos = prontoParaBusca = temCampoInvalido = false;
@@ -92,24 +93,44 @@ public class CompreFacilSteps {
     	this.entrega.setsCdAvisoRecebimento(sCdAvisoRecebimento);
     }
 
-    @Then("^correios API returns \"([^\"]*)\" (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"$")
-    public void correios_API_returns(String sCodigo, double sValor, int sPrazoEntrega, double sValorMaoPropria, 
-    		double sValorAvisoRecebimento, double sValorDeclarado, String sEntregaDomiciliar, String sEntregaSabado, 
-    		String sErro, String sMsgErro) throws Throwable {
-    	Assert.assertTrue(todosItensDefinidos);
-    	Assert.assertTrue(prontoParaBusca);
-    	Assert.assertNotNull(entrega);
-    	
-    	if(temCampoInvalido) {
-    		Assert.assertNotNull(sErro);
-    		Assert.assertNotNull(sMsgErro);
-    		
-    	} else {
-    		Assert.assertNull(sErro);
-    		Assert.assertNull(sMsgErro);
-    	}
-    }
+	@Then("^correios API returns \"([^\"]*)\" (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"$")
+	public void correios_API_returns(String sCodigo, double sValor,
+			int sPrazoEntrega, double sValorMaoPropria,
+			double sValorAvisoRecebimento, double sValorDeclarado,
+			String sEntregaDomiciliar, String sEntregaSabado, String sErro,
+			String sMsgErro) throws Throwable {
+		Assert.assertTrue(todosItensDefinidos);
+		Assert.assertTrue(prontoParaBusca);
+		Assert.assertNotNull(entrega);
 
+		if (temCampoInvalido) {
+			Assert.assertNotNull(sErro);
+			Assert.assertNotNull(sMsgErro);
+
+		} else {
+			Assert.assertNull(sErro);
+			Assert.assertNull(sMsgErro);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param sPrazoEntrega
+	 * @param sValor
+	 * @throws Throwable
+	 * 
+	 * Adicionei este step para realizar o Mock de salvar os dados
+	 * creio que talvez seja necessário add algum assertThat
+	 */
+	@Then("^save data in database (\\d+) (\\d+)$")
+	public void save_data_in_database(int sPrazoEntrega, double sValor) throws Throwable {
+		
+		DadosEntregaCorreiosTO dadosEntregaTO = new DadosEntregaCorreiosTO();
+		dadosEntregaTO.setPrazo(sPrazoEntrega);
+		dadosEntregaTO.setValor(sValor);
+		dadosDeEntregaMock.salvaDadosDeEntrega(dadosEntregaTO);
+	}
+	
     @Given("^at least one field is not valid$")
     public void at_least_one_field_is_not_valid() throws Throwable {
     	temCampoInvalido = true;

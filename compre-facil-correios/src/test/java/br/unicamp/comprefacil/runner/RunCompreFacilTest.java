@@ -1,13 +1,14 @@
 package br.unicamp.comprefacil.runner;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 
