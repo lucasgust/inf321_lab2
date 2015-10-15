@@ -3,22 +3,24 @@ package br.unicamp.comprefacil.integration;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.unicamp.comprefacil.bo.CorreiosBO;
+import br.unicamp.comprefacil.exception.CorreiosException;
+import br.unicamp.comprefacil.service.CorreiosService;
+import br.unicamp.comprefacil.service.impl.CorreiosServiceImpl;
 import br.unicamp.comprefacil.to.DadosEntregaCorreiosTO;
 import br.unicamp.comprefacil.to.EnderecoTO;
 import br.unicamp.comprefacil.to.EntregaTO;
 
 public class CorreiosIntegrationTest {
 	
-	private CorreiosBO correio;
+	private CorreiosService correiosService;
 	
 	@Before
 	public void setUp() {
-		correio = new CorreiosBO();
+		correiosService = new CorreiosServiceImpl();
 	}
 
 	@Test
-	public void testarBuscarValorEPrazo() {
+	public void testarBuscarValorEPrazo() throws CorreiosException {
 		System.out.println("Testando: buscarValorEPrazo\n");
 		EntregaTO entrega = new EntregaTO();
 		DadosEntregaCorreiosTO retorno = new DadosEntregaCorreiosTO();
@@ -36,7 +38,7 @@ public class CorreiosIntegrationTest {
 		entrega.setsCepDestino("09520650");
 		entrega.setsCepOrigem("09520650");
 	
-		retorno = correio.buscarValorEPrazo(entrega);
+		retorno = correiosService.buscaValorEPrazo(entrega);
 		
 		System.out.println("Prazo: " + retorno.getPrazo());
 		System.out.println("Valor: " + retorno.getValor());
@@ -46,7 +48,7 @@ public class CorreiosIntegrationTest {
 	public void testarValidarCEP() throws Exception {
 		System.out.println("\n\nTestando: validarCEP\n");
 		
-		EnderecoTO toEndereco = correio.validarCEP("01001000"); // praça da sé
+		EnderecoTO toEndereco = correiosService.buscaEndereco("01001000"); // praça da sé
 		
 		if (toEndereco != null) {
 			System.out.println(

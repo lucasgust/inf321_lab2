@@ -33,5 +33,4 @@ public class RunCompreFacilTest {
 	public static void runAfterClass() {
 		wireMockServer.stop();
 	}
-
 }

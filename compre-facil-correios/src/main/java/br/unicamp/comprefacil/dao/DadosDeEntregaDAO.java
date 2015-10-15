@@ -1,7 +1,9 @@
 package br.unicamp.comprefacil.dao;
 
+import br.unicamp.comprefacil.to.DadosEntregaCorreiosTO;
+
 public interface DadosDeEntregaDAO {
 
-	public void saveDadosDeEntrega(Double valorFrete, Integer diasEntrega);
+	public void salvaDadosDeEntrega(DadosEntregaCorreiosTO dadosEntregaTO);
 	
 }

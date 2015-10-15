@@ -56,4 +56,8 @@ public class EnderecoTO {
 		return gia;
 	}
 
+	@Override
+	public String toString() {
+		return "[cep=" + cep + ", logradouro=" + logradouro + "]";
+	}
 }

@@ -9,9 +9,12 @@ import static org.junit.Assert.assertNotNull;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
+import org.mockito.Mockito;
 
-import br.unicamp.comprefacil.bo.CorreiosBO;
-import br.unicamp.comprefacil.to.DadosEntregaCorreiosTO;
+import br.unicamp.comprefacil.dao.CorreiosDAO;
+import br.unicamp.comprefacil.dao.DadosDeEntregaDAO;
+import br.unicamp.comprefacil.service.CorreiosService;
+import br.unicamp.comprefacil.service.impl.CorreiosServiceImpl;
 import br.unicamp.comprefacil.to.EnderecoTO;
 import br.unicamp.comprefacil.to.EntregaTO;
 import cucumber.api.java.Before;
@@ -21,9 +24,12 @@ import cucumber.api.java.en.When;
 
 public class CompreFacilSteps {
 	
-	private CorreiosBO boCorreios;
+	private CorreiosService correiosService;
 	private EnderecoTO toEndereco;
 	private EntregaTO entrega;
+	
+	private CorreiosDAO correiosDAOMock;
+	private DadosDeEntregaDAO dadosDeEntregaMock;
 	
 	private String cep;
 	private Throwable throwable;
@@ -34,7 +40,13 @@ public class CompreFacilSteps {
 	
     @Before
     public void setUp() {
-    	boCorreios = new CorreiosBO();
+//    	correiosDAOMock = Mockito.mock(CorreiosDAO.class);
+//    	dadosDeEntregaMock = Mockito.mock(DadosDeEntregaDAO.class);
+    	
+    	correiosService = new CorreiosServiceImpl();
+//    	correiosService.setCorreiosDAO(correiosDAOMock);
+//    	correiosService.setDadosDeEntregaDAO(dadosDeEntregaMock);
+    	
     	throwable = null;
     	todosItensDefinidos = prontoParaBusca = temCampoInvalido = false;
     	entrega = new EntregaTO();
@@ -57,7 +69,7 @@ public class CompreFacilSteps {
 
     @When("^system connects to Correios API$")
     public void system_connects_to_Correios_API() throws Throwable {
-        assertNotNull(boCorreios);
+        assertNotNull(correiosService);
     }
 
     @When("^system sends the file with all mandatory tags \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) \"([^\"]*)\" (\\d+) \"([^\"]*)\"$") 
@@ -134,7 +146,7 @@ public class CompreFacilSteps {
     @When("^system sends the file with the mandatory tag \"([^\"]*)\"$")
     public void system_sends_the_file_with_the_mandatory_tag(String cep) {
     	try {
-        	toEndereco = this.boCorreios.validarCEP(cep);
+        	toEndereco = this.correiosService.buscaEndereco(cep);
     	} catch (Exception e) {
     		throwable = e;
     	}

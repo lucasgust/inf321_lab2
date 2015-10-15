@@ -4,6 +4,6 @@ import br.unicamp.comprefacil.to.EnderecoTO;
 
 public interface CorreiosDAO {
 	
-	public EnderecoTO buscarEndereco(String cep);
+	public void salvaEndereco(EnderecoTO cep);
 
 }
