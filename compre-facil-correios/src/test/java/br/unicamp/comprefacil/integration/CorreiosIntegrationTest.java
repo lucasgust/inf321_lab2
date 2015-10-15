@@ -1,33 +1,36 @@
-package br.unicamp.comprefacil.teste;
+package br.unicamp.comprefacil.integration;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import br.unicamp.comprefacil.bo.CorreiosBO;
 import br.unicamp.comprefacil.to.DadosEntregaCorreiosTO;
 import br.unicamp.comprefacil.to.EnderecoTO;
 import br.unicamp.comprefacil.to.EntregaTO;
 
-public class Teste {
+public class CorreiosIntegrationTest {
 	
-	private CorreiosBO correio = new CorreiosBO();
-
-	public static void main(String[] args) {
-		Teste teste = new Teste();
-//		teste.testarBuscarValorEPrazo();
-		teste.testarValidarCEP();
+	private CorreiosBO correio;
+	
+	@Before
+	public void setUp() {
+		correio = new CorreiosBO();
 	}
-	
-	private void testarBuscarValorEPrazo() {
+
+	@Test
+	public void testarBuscarValorEPrazo() {
 		System.out.println("Testando: buscarValorEPrazo\n");
 		EntregaTO entrega = new EntregaTO();
 		DadosEntregaCorreiosTO retorno = new DadosEntregaCorreiosTO();
 		
-		entrega.setnCdFormato("3");
+		entrega.setnCdFormato(3);
 		entrega.setnCdServico("40215");
-		entrega.setnVlAltura("1");
-		entrega.setnVlComprimento("16");
-		entrega.setnVlDiametro("1");
-		entrega.setnVlLargura("11");
-		entrega.setnVlPeso("1");
-		entrega.setnVlValorDeclarado("0");
+		entrega.setnVlAltura(1);
+		entrega.setnVlComprimento(16);
+		entrega.setnVlDiametro(1);
+		entrega.setnVlLargura(11);
+		entrega.setnVlPeso(1);
+		entrega.setnVlValorDeclarado(0);
 		entrega.setsCdAvisoRecebimento("S");
 		entrega.setsCdMaoPropria("S");
 		entrega.setsCepDestino("09520650");
@@ -39,7 +42,8 @@ public class Teste {
 		System.out.println("Valor: " + retorno.getValor());
 	}
 	
-	private void testarValidarCEP() {
+	@Test
+	public void testarValidarCEP() throws Exception {
 		System.out.println("\n\nTestando: validarCEP\n");
 		
 		EnderecoTO toEndereco = correio.validarCEP("01001000"); // praça da sé

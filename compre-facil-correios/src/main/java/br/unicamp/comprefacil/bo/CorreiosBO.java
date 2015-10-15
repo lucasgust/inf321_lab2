@@ -48,7 +48,7 @@ public class CorreiosBO {
 		return retornoCorreios;
 	}
 
-	public EnderecoTO validarCEP(String cep) {
+	public EnderecoTO validarCEP(String cep) throws Exception {
 		EnderecoTO toEndereco = null;
 		
 		try {
@@ -65,13 +65,13 @@ public class CorreiosBO {
 			// validar se CEP foi encontrado
 			if (toEndereco.getCep() == null) {
 				toEndereco = null;
-				throw new Exception("O CEP informado não foi encontrado.");
+				throw new Exception("O CEP informado nao foi encontrado.");
 			}
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			if (e instanceof NumberFormatException) {
-				e = new Exception("O CEP informado é inválido. O formato correto é compsoto por {8} dígitos.");
+				e = new Exception("O CEP informado eh invalido. O formato correto é composto por 8 digitos.");
 			}
-			e.printStackTrace();
+			throw e;
 		}
 		
 		return toEndereco;

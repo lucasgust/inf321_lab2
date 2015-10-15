@@ -7,14 +7,14 @@ public class EntregaTO {
 	private String nCdServico;
 	private String sCepOrigem;
 	private String sCepDestino;
-	private String nVlPeso;
-	private String nCdFormato;
-	private String nVlComprimento;
-	private String nVlAltura;
-	private String nVlLargura;
-	private String nVlDiametro;
+	private int nVlPeso;
+	private int nCdFormato;
+	private int nVlComprimento;
+	private int nVlAltura;
+	private int nVlLargura;
+	private int nVlDiametro;
 	private String sCdMaoPropria;
-	private String nVlValorDeclarado;
+	private int nVlValorDeclarado;
 	private String sCdAvisoRecebimento;
 	
 	public String getnCdEmpresa() {
@@ -47,40 +47,40 @@ public class EntregaTO {
 	public void setsCepDestino(String sCepDestino) {
 		this.sCepDestino = sCepDestino;
 	}
-	public String getnVlPeso() {
+	public int getnVlPeso() {
 		return nVlPeso;
 	}
-	public void setnVlPeso(String nVlPeso) {
+	public void setnVlPeso(int nVlPeso) {
 		this.nVlPeso = nVlPeso;
 	}
-	public String getnCdFormato() {
+	public int getnCdFormato() {
 		return nCdFormato;
 	}
-	public void setnCdFormato(String nCdFormato) {
+	public void setnCdFormato(int nCdFormato) {
 		this.nCdFormato = nCdFormato;
 	}
-	public String getnVlComprimento() {
+	public int getnVlComprimento() {
 		return nVlComprimento;
 	}
-	public void setnVlComprimento(String nVlComprimento) {
+	public void setnVlComprimento(int nVlComprimento) {
 		this.nVlComprimento = nVlComprimento;
 	}
-	public String getnVlAltura() {
+	public int getnVlAltura() {
 		return nVlAltura;
 	}
-	public void setnVlAltura(String nVlAltura) {
+	public void setnVlAltura(int nVlAltura) {
 		this.nVlAltura = nVlAltura;
 	}
-	public String getnVlLargura() {
+	public int getnVlLargura() {
 		return nVlLargura;
 	}
-	public void setnVlLargura(String nVlLargura) {
+	public void setnVlLargura(int nVlLargura) {
 		this.nVlLargura = nVlLargura;
 	}
-	public String getnVlDiametro() {
+	public int getnVlDiametro() {
 		return nVlDiametro;
 	}
-	public void setnVlDiametro(String nVlDiametro) {
+	public void setnVlDiametro(int nVlDiametro) {
 		this.nVlDiametro = nVlDiametro;
 	}
 	public String getsCdMaoPropria() {
@@ -89,10 +89,10 @@ public class EntregaTO {
 	public void setsCdMaoPropria(String sCdMaoPropria) {
 		this.sCdMaoPropria = sCdMaoPropria;
 	}
-	public String getnVlValorDeclarado() {
+	public int getnVlValorDeclarado() {
 		return nVlValorDeclarado;
 	}
-	public void setnVlValorDeclarado(String nVlValorDeclarado) {
+	public void setnVlValorDeclarado(int nVlValorDeclarado) {
 		this.nVlValorDeclarado = nVlValorDeclarado;
 	}
 	public String getsCdAvisoRecebimento() {

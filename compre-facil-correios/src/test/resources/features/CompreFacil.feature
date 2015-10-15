@@ -13,10 +13,10 @@ Scenario Outline: Calculating freight and deadline - API Integration
 	
 	Examples:
 		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|sCodigo 		| sValor	| sPrazoEntrega | sValorMaoPropria | sValorAvisoRecebimento	| sValorDeclarado| sEntregaDomiciliar | sEntregaSabado | sErro | sMsgErro |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |1		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   |	   |	   	  |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |2		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	2			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   |	   |	   	  |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   |	   |	   	  |
-		|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00	       | 	0,00		 		| 0,00		 	 |	S				  |	S			   |	   |	   	  |
+		|		   |		|40010     |13495-000 |13417-780  |100	  |1		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13.20	|	1			|	 0.00		   | 	0.00		 		| 0.00			 |	S				  |	S			   |	   |	   	  |
+		|		   |		|40010	   |13495-000 |13417-780  |100	  |2		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13.20	|	2			|	 0.00		   | 	0.00		 		| 0.00			 |	S				  |	S			   |	   |	   	  |
+		|		   |		|40010	   |13495-000 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13.20	|	1			|	 0.00		   | 	0.00		 		| 0.00			 |	S				  |	S			   |	   |	   	  |
+		|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13.20	|	1			|	 0.00	       | 	0.00		 		| 0.00		 	 |	S				  |	S			   |	   |	   	  |
 
 Scenario Outline: Calculating freight and deadline - API Integration returns Error
 	Given All items from sales order are settled
@@ -24,7 +24,7 @@ Scenario Outline: Calculating freight and deadline - API Integration returns Err
 	And at least one field is not valid
 	When User press button to calculate freight
 	And system connects to Correios API
-	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<sCepDestino>" <nVlPeso> <nCdFormato> <nVlComprimento> <nVlAltura> <nVlLargura> <nVlDiametro> "<sCdMaoPropria>" <nVlValorDeclarado> "<sCdAvisoRecebimento>"
+	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" <nVlPeso> <nCdFormato> <nVlComprimento> <nVlAltura> <nVlLargura> <nVlDiametro> "<sCdMaoPropria>" <nVlValorDeclarado> "<sCdAvisoRecebimento>"
 	Then correios API returns "<sCodigo>" <sValor> <sPrazoEntrega> <sValorMaoPropria> <sValorAvisoRecebimento> <sValorDeclarado> "<sEntregaDomiciliar>" "<sEntregaSabado>" "<sErro>" "<sMsgErro>"
 	
 	Examples:
@@ -54,7 +54,7 @@ Scenario: Empty zip code
 Scenario Outline: Invalid zip code
 	Given I have an invalid zip code "<cep>"
 	When I press button to search 
-	Then should show an error with a message "O CEP informado invalido. O formato correto eh compsoto por 8 digitos"
+	Then should show an error with a message "O CEP informado invalido. O formato correto eh composto por 8 digitos"
 	
 	Examples:
 	|cep		|
