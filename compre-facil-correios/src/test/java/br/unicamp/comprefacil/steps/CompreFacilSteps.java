@@ -7,12 +7,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.apache.http.NoHttpResponseException;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.mockito.Mockito;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.admin.GetRequestCountTask;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.http.Fault;
 
 import br.unicamp.comprefacil.dao.CorreiosDAO;
 import br.unicamp.comprefacil.dao.DadosDeEntregaDAO;
@@ -38,9 +40,12 @@ public class CompreFacilSteps {
 	private String cep;
 	private Throwable throwable;
 	
+	private String url;
+	
 	private Boolean todosItensDefinidos;
 	private Boolean prontoParaBusca;
 	private Boolean temCampoInvalido;
+	private Boolean erroGrave;
 	
 //	@Rule
 //	public WireMockRule wireMockRule = new WireMockRule();
@@ -126,7 +131,7 @@ public class CompreFacilSteps {
 	 * @throws Throwable
 	 * 
 	 * Adicionei este step para realizar o Mock de salvar os dados
-	 * creio que talvez seja necessï¿½rio add algum assertThat
+	 * creio que talvez seja necessário add algum assertThat
 	 */
 	@Then("^save data in database (\\d+) (\\d+)$")
 	public void save_data_in_database(int sPrazoEntrega, double sValor) throws Throwable {
@@ -147,7 +152,6 @@ public class CompreFacilSteps {
     	try {
     		Integer.parseInt(cep);
     		this.cep = cep;
-    		
     	} catch (NumberFormatException e) {
     		Assert.fail(e.getMessage());
     	}
@@ -155,18 +159,47 @@ public class CompreFacilSteps {
     
     @When("^I press button to search$")
     public void i_press_button_to_search() throws Throwable {
+    	this.erroGrave = false;
+    	this.url = null;
     	try {
-    		stubFor(get(urlEqualTo("http://viacep.com.br/ws/" + this.cep + "/json/"))
-    				.willReturn(aResponse()
-    						.withHeader("Content-Type", "application/json")
-    						.withBody("{\"cep\": \"01001-000\", "
-    								+ "\"logradouro\": \"Praca da Se\", "
-    								+ "\"complemento\": \"lado impar\", "
-    								+ "\"bairro\": \"Se\", \"localidade\": "
-    								+ "\"Sao Paulo\", \"uf\": \"SP\", "
-    								+ "\"ibge\": \"3550308\"}")));
-    	} catch (Throwable e) {
-    		throwable = e;
+    		if (this.cep == null) {
+    			this.cep = "";
+    		}
+    		url = "/viacep/ws/" + this.cep + "/json/";
+    		Integer.parseInt(this.cep);
+    		if (this.cep.trim().equals("") || this.cep.trim().length() != 8) {
+    			stubFor(get(urlEqualTo(url))
+    					.willReturn(aResponse()
+    							.withStatus(400)));
+    		} else if (this.cep.equals("88888888") || this.cep.equals("99999999")) {
+    			stubFor(get(urlEqualTo(url))
+    					.willReturn(aResponse()
+    							.withStatus(200)
+        						.withHeader("Content-Type", "application/json")
+        						.withBody("{\"erro\": true}")));
+    		} else if (this.cep.equals("01001000")) {
+    			stubFor(get(urlEqualTo(url))
+    					.willReturn(aResponse()
+    							.withStatus(200)
+        						.withHeader("Content-Type", "application/json")
+        						.withBody("{\"cep\": \"01001-000\", \"logradouro\": \"Praca da Se\", \"complemento\": \"lado impar\", \"bairro\": \"Se\", \"localidade\": \"Sao Paulo\", \"uf\": \"SP\", \"ibge\": \"3550308\", \"gia\": \"1004\"}")));
+    		} else if (this.cep.equals("01311300")) {
+    			stubFor(get(urlEqualTo(url))
+    					.willReturn(aResponse()
+    							.withStatus(200)
+        						.withHeader("Content-Type", "application/json")
+        						.withBody("{\"cep\": \"01311-300\", \"logradouro\": \"Avenida Paulista\", \"complemento\": \"de 1867 ao fim - lado impar\", \"bairro\": \"Bela Vista\", \"localidade\": \"Sao Paulo\", \"uf\": \"SP\", \"ibge\": \"3550308\", \"gia\": \"1004\"}")));
+    		} else if (this.cep.equals("01010000")) {
+    			stubFor(get(urlEqualTo(url))
+    					.willReturn(aResponse()
+    							.withStatus(200)
+        						.withHeader("Content-Type", "application/json")
+        						.withFault(Fault.EMPTY_RESPONSE)));
+    		}
+    	} catch (NumberFormatException e) {
+    		stubFor(get(urlEqualTo(url))
+					.willReturn(aResponse()
+							.withStatus(400)));
     	}
     }
 
@@ -175,12 +208,14 @@ public class CompreFacilSteps {
     	try {
         	toEndereco = this.correiosService.buscaEndereco(cep);
     	} catch (Exception e) {
+    		erroGrave = e instanceof NoHttpResponseException;
     		throwable = e;
     	}
     }
 
-    @Then("^ViaCEP API returns \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" (\\d+)$")
-    public void viacep_API_returns(String cep, String logradouro, String complemento, String bairro, String localidade, String uf, String ibge, int gia) throws Throwable {
+    @Then("^ViaCEP API returns \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"$")
+    public void viacep_API_returns(String cep, String logradouro, String complemento, String bairro, String localidade, String uf, String ibge, String gia) throws Throwable {
+    	WireMock.verify(1, WireMock.getRequestedFor(urlEqualTo(url)));
     	assertEquals(toEndereco.getCep().replace("-", ""), cep);
     	assertEquals(toEndereco.getLogradouro(), logradouro);
     	assertEquals(toEndereco.getComplemento(), complemento);
@@ -191,37 +226,45 @@ public class CompreFacilSteps {
     	assertEquals(toEndereco.getGia(), gia);
     }
 
-    @Given("^I do not have a zip code$")
-    public void i_do_not_have_a_zip_code(String cep) throws Throwable {
-    	Assertions.assertThat(cep).isNullOrEmpty();
-    }
-
     @Then("^should show an error with a message: \"([^\"]*)\"$")
     public void should_show_an_error_with_a_message(String message) throws Throwable {
-    	Assertions.assertThat(throwable).isNotNull().hasMessage(message);
+    	if (erroGrave) {
+    		Assertions.assertThat(throwable).isNotNull().hasMessage(message);
+    	} else {
+    		Assertions.assertThat(throwable.getCause()).isNotNull().hasMessage(message);
+    	}
     }
 
     @Given("^I have an invalid zip code \"([^\"]*)\"$")
     public void i_have_an_invalid_zip_code(String cep) throws Throwable {
+    	this.cep = cep;
+    	boolean error = false;
+    	error = cep == null || cep.trim().equals("");
     	try {
     		Integer.parseInt(cep);
-    		Assert.fail();
-    	} catch (NumberFormatException e) { }
+    	} catch (NumberFormatException e) {
+    		error = true;
+    	}
+    	assert(error);
     }
 
     @Given("^I have a valid but not registered zip code \"([^\"]*)\"$")
     public void i_have_a_valid_but_not_registered_zip_code(String cep) throws Throwable {
-    	Assertions.assertThat(cep).isIn("00000000", "99999999");
+    	this.cep = cep;
+    	Assertions.assertThat(cep).isIn("88888888", "99999999");
     }
 
     @When("^system returns an empty address object$")
     public void system_returns_an_empty_address_object() throws Throwable {
+    	if (!erroGrave) {
+    		WireMock.verify(1, WireMock.getRequestedFor(urlEqualTo(url)));
+    	}
     	Assertions.assertThat(toEndereco).isNull();
     }
     
-    @Given("^CEP address endpoint and a \"([^\"]*)\"$")
-    public void cep_address_endpoint_and_a(String msg) throws Throwable {
-    	assertEquals(msg, throwable.getMessage());	
+    @When("^Correios API is unavailable$")
+    public void Correios_API_is_unavailable() throws Throwable {
+    	assert(true);
     }
 
     /*

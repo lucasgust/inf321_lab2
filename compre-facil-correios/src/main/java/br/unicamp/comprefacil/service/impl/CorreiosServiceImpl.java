@@ -1,13 +1,11 @@
 package br.unicamp.comprefacil.service.impl;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -35,14 +33,12 @@ public class CorreiosServiceImpl implements CorreiosService {
 	private CorreiosDAO correiosDAO;
 	private DadosDeEntregaDAO dadosDeEntregaDAO;
 
-	public static final String URL_CALC_PRECO_PRAZO = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo";
-	public static final String URL_VALIDA_CEP = "http://viacep.com.br/ws/{0}/json/";
-	private static WireMockServer wireMockServer;
+	public static final String URL_CALC_PRECO_PRAZO = "http://localhost:8089/correios/ws/CalcPrecoPrazo.asmx/CalcPrecoPrazo";
+	public static final String URL_VALIDA_CEP = "http://localhost:8089/viacep/ws/{0}/json/";
 
 	public CorreiosServiceImpl() {
 		setCorreiosDAO(new CorreiosDAOImpl());
 		setDadosDeEntregaDAO(new DadosDeEntregaDAOImpl());
-				
 	}
 
 	private HttpClient getHttpClient() {
@@ -57,8 +53,7 @@ public class CorreiosServiceImpl implements CorreiosService {
 		return clientBuilder.build();
 	}
 
-	public DadosEntregaCorreiosTO buscaValorEPrazo(EntregaTO dadosParaEntrega)
-			throws CorreiosException {
+	public DadosEntregaCorreiosTO buscaValorEPrazo(EntregaTO dadosParaEntrega) throws CorreiosException {
 		DadosEntregaCorreiosTO dadosEntrega = null;
 
 		try {
@@ -111,11 +106,9 @@ public class CorreiosServiceImpl implements CorreiosService {
 			int indexPrazoInicial = responseXML.indexOf("<PrazoEntrega>");
 			int indexPrazoFinal = responseXML.indexOf("</PrazoEntrega>");
 
-			String valor = responseXML
-					.substring(indexValInicial, indexValFinal);
+			String valor = responseXML.substring(indexValInicial, indexValFinal);
 			valor = valor.replace("<Valor>", "").trim();
-			String prazo = responseXML.substring(indexPrazoInicial,
-					indexPrazoFinal);
+			String prazo = responseXML.substring(indexPrazoInicial, indexPrazoFinal);
 			prazo = prazo.replace("<PrazoEntrega>", "").trim();
 
 			dadosEntrega = new DadosEntregaCorreiosTO();
@@ -132,64 +125,34 @@ public class CorreiosServiceImpl implements CorreiosService {
 		return dadosEntrega;
 	}
 
-	public String validaCep(String cep) throws CorreiosException {
+	public String validaCep(String cep) throws CorreiosException, NoHttpResponseException {
 		try {
-			// validar se CEP foi informado
-			if (cep == null || cep.trim().equals("")) {
-				throw new Exception("O campo CEP não foi informado.");
-			}
-
-			// validar se CEP é um número inteiro
-			Integer.parseInt(cep);
-			
-			//Chamada para mock
-			
-			wireMockServer = new WireMockServer(wireMockConfig().port(8067));
-			configureFor(8067);
-			wireMockServer.start();
-			
-			
-			if(cep.equalsIgnoreCase("01001000")){
-				stubFor(post(urlEqualTo("/viacep/" + cep))
-			            .willReturn(aResponse()
-			                .withHeader("Content-Type", "text/plain")
-			                .withBody("{\"cep\": \"01001-000\", \"logradouro\": \"Praça da Sé\", \"complemento\": \"lado ímpar\", \"bairro\": \"Sé\", \"localidade\": \"São Paulo\", \"uf\": \"SP\", \"ibge\": \"3550308\", \"gia\": \"1004\"}")));
-			} else {
-				//TODO: lancar exception quando não for um cep esperado na feature
-			}
-			
 			HttpClient httpClient = getHttpClient();
-			HttpPost httpost = new HttpPost("http://localhost:8067/viacep/" + cep);
-
-			/*Chamada para o serviço quente
-			
 			Object[] params = { cep };
-			HttpGet httpget = new HttpGet(MessageFormat.format(URL_VALIDA_CEP,
-					params));
-			HttpResponse response = httpClient.execute(httpget);*/
+			HttpGet httpget = new HttpGet(MessageFormat.format(URL_VALIDA_CEP, params));
+			HttpResponse response = httpClient.execute(httpget);
 			
-			HttpResponse response = httpClient.execute(httpost);
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new CorreiosException(
-						"Código de retorno diferente de Http OK");
+			if (response.getStatusLine().getStatusCode() == 400) {
+				throw new CorreiosException("O CEP nao foi informado ou eh invalido. O formato correto eh composto por 8 digitos.");
 			}
-			wireMockServer.stop();
+			
+			String responseText = EntityUtils.toString(response.getEntity());
 
-			return EntityUtils.toString(response.getEntity());
-
+			if (responseText.equals("{\"erro\": true}")) {
+				throw new CorreiosException("O CEP informado nao foi encontrado.");
+			}
+			
+			return responseText;
+		} catch (NoHttpResponseException e) {
+			throw new NoHttpResponseException("Servico indisponivel. Por favor, tente mais tarde.");
 		} catch (Exception e) {
 			throw new CorreiosException(e);
 		}
 	}
 
-	public EnderecoTO buscaEndereco(String cep) throws CorreiosException {
-		EnderecoTO endereco = null;
+	public EnderecoTO buscaEndereco(String cep) throws CorreiosException, NoHttpResponseException {
 		String json = this.validaCep(cep);
-		endereco = gson.fromJson(json, EnderecoTO.class);
-
-		if (endereco.getCep() == null) {
-			throw new CorreiosException("O CEP informado nao foi encontrado.");
-		}
+		EnderecoTO endereco = gson.fromJson(json, EnderecoTO.class);
 		correiosDAO.salvaEndereco(endereco);
 		return endereco;
 	}

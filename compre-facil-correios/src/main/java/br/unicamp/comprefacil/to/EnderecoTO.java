@@ -9,10 +9,10 @@ public class EnderecoTO {
 	protected String localidade;
 	protected String uf;
 	protected String ibge;
-	protected int gia;
+	protected String gia;
 	
 	public EnderecoTO(String cep, String logradouro, String complemento,
-			String bairro, String localidade, String uf, String ibge, int gia) {
+			String bairro, String localidade, String uf, String ibge, String gia) {
 		super();
 		this.cep = cep;
 		this.logradouro = logradouro;
@@ -52,10 +52,10 @@ public class EnderecoTO {
 		return ibge;
 	}
 
-	public int getGia() {
+	public String getGia() {
 		return gia;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "[cep=" + cep + ", logradouro=" + logradouro + "]";

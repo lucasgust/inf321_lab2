@@ -30,10 +30,10 @@ Scenario Outline: Calculating freight and deadline - API Integration returns Err
 	
 	Examples:
 		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|sCodigo 		| sValor	| sPrazoEntrega | sValorMaoPropria | sValorAvisoRecebimento	| sValorDeclarado| sEntregaDomiciliar | sEntregaSabado | sErro | sMsgErro 													 |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |1		 |150			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -15   | O comprimento n�o pode ser maior que 105 cm				 |
+		|		   |		|40010	   |13495-000 |13417-780  |100	  |1		 |150			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -15   | O comprimento n�o pode ser maior que 105 cm				 |
 		|		   |		|40010	   |13495-000 |13417-780  |100	  |2		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	2			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -33   | Sistema temporariamente fora do ar. Favor tentar mais tarde |
-		|		   |		|40010	   |13495-xx5 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -2	   | CEP de origem inv�lido								   	     |
-		|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|-1	      |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00	       | 	0,00		 		| 0,00		 	 |	S				  |	S			   | -14   | Altura inv�lida	   								   	     |
+		|		   |		|40010	   |13495-xx5 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -2	   | CEP de origem inv�lido								   	     |
+		|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|-1	      |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00	       | 	0,00		 		| 0,00		 	 |	S				  |	S			   | -14   | Altura inv�lida	   								   	     |
 	
 	
 Scenario Outline: Getting address - API Integration
@@ -41,29 +41,30 @@ Scenario Outline: Getting address - API Integration
 	When I press button to search
 	And system connects to Correios API
 	And system sends the file with the mandatory tag "<cep>"
-	Then ViaCEP API returns "<cep>" "<logradouro>" "<complemento>" "<bairro>" "<localidade>" "<uf>" "<ibge>" <gia>
+	Then ViaCEP API returns "<cep>" "<logradouro>" "<complemento>" "<bairro>" "<localidade>" "<uf>" "<ibge>" "<gia>"
 
 	Examples:
 	|cep		|logradouro			|complemento				|bairro		|localidade		|uf	|ibge	|gia	|
-	|01001000	|Praça da Sé		|lado ímpar					|Sé			|São Paulo		|SP	|3550308|1004	|
+	|01001000	|Praca da Se		|lado impar					|Se			|Sao Paulo		|SP	|3550308|1004	|
+	|01311300	|Avenida Paulista	|de 1867 ao fim - lado impar|Bela Vista	|Sao Paulo		|SP	|3550308|1004	|
 	
-Scenario: Empty zip code 
-	Given I do not have a zip code "<cep>"  
-	When I press button to search 
-	Then should show an error with a message: "O campo CEP nao foi informado."
 	
 Scenario Outline: Invalid zip code
 	Given I have an invalid zip code "<cep>"
 	When I press button to search 
-	Then should show an error with a message "O CEP informado invalido. O formato correto eh composto por 8 digitos"
+	And system connects to Correios API
+	And system sends the file with the mandatory tag "<cep>"
+	And system returns an empty address object
+	Then should show an error with a message: "O CEP nao foi informado ou eh invalido. O formato correto eh composto por 8 digitos."
 	
 	Examples:
 	|cep		|
-	|010010XX	|
-	|teste		|
+	|			|
+	|0000000X	|
+	
 	
 Scenario Outline: Address not found
-	Given I have a valid but not registered zip code "<cep>" 
+	Given I have a valid but not registered zip code "<cep>"
 	When I press button to search
 	And system connects to Correios API
 	And system sends the file with the mandatory tag "<cep>"
@@ -72,18 +73,19 @@ Scenario Outline: Address not found
 	
 	Examples:
 	|cep		|
-	|00000000	|
+	|88888888	|
 	|99999999	|
+
 	
-Scenario Outline: CEP address endpoint not found
-    Given CEP address endpoint and a "<cep>"
-    And VIACEP service unavailable
-    When The system receives any "<cep>"
-    Then should show an error with a message: "Serviço indisponível, por favor tentar mais tarde!"
+Scenario Outline: CEP address endpoint is unavailable
+	Given I have a valid and registered zip code "<cep>"
+	When I press button to search
+    And Correios API is unavailable
+    And system sends the file with the mandatory tag "<cep>"
+	And system returns an empty address object
+    Then should show an error with a message: "Servico indisponivel. Por favor, tente mais tarde."
 	
 	Examples:
 	|cep		|
-	|00000000	|
-	|99999999	|
-		
-	
+	|01010000	|
+
