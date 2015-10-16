@@ -1,5 +1,7 @@
 package br.unicamp.comprefacil.service.impl;
-
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +37,12 @@ public class CorreiosServiceImpl implements CorreiosService {
 
 	public static final String URL_CALC_PRECO_PRAZO = "http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo";
 	public static final String URL_VALIDA_CEP = "http://viacep.com.br/ws/{0}/json/";
+	private static WireMockServer wireMockServer;
 
 	public CorreiosServiceImpl() {
 		setCorreiosDAO(new CorreiosDAOImpl());
 		setDadosDeEntregaDAO(new DadosDeEntregaDAOImpl());
+				
 	}
 
 	private HttpClient getHttpClient() {
@@ -137,15 +141,39 @@ public class CorreiosServiceImpl implements CorreiosService {
 
 			// validar se CEP é um número inteiro
 			Integer.parseInt(cep);
-
+			
+			//Chamada para mock
+			
+			wireMockServer = new WireMockServer(wireMockConfig().port(8067));
+			configureFor(8067);
+			wireMockServer.start();
+			
+			
+			if(cep.equalsIgnoreCase("01001000")){
+				stubFor(post(urlEqualTo("/viacep/" + cep))
+			            .willReturn(aResponse()
+			                .withHeader("Content-Type", "text/plain")
+			                .withBody("{\"cep\": \"01001-000\", \"logradouro\": \"Praça da Sé\", \"complemento\": \"lado ímpar\", \"bairro\": \"Sé\", \"localidade\": \"São Paulo\", \"uf\": \"SP\", \"ibge\": \"3550308\", \"gia\": \"1004\"}")));
+			} else {
+				//TODO: lancar exception quando não for um cep esperado na feature
+			}
+			
 			HttpClient httpClient = getHttpClient();
+			HttpPost httpost = new HttpPost("http://localhost:8067/viacep/" + cep);
+
+			/*Chamada para o serviço quente
+			
 			Object[] params = { cep };
 			HttpGet httpget = new HttpGet(MessageFormat.format(URL_VALIDA_CEP,
 					params));
-			HttpResponse response = httpClient.execute(httpget);
-
-			if (response.getStatusLine().getStatusCode() != 200)
-				throw new Exception("Código de retorno diferente de Http OK");
+			HttpResponse response = httpClient.execute(httpget);*/
+			
+			HttpResponse response = httpClient.execute(httpost);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new CorreiosException(
+						"Código de retorno diferente de Http OK");
+			}
+			wireMockServer.stop();
 
 			return EntityUtils.toString(response.getEntity());
 
