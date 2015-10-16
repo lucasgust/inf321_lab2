@@ -158,5 +158,7 @@ public class CorreiosServiceImpl implements CorreiosService {
 
 	public void setDadosDeEntregaDAO(DadosDeEntregaDAO dao) {
 		this.dadosDeEntregaDAO = dao;
+		
 	}
+
 }
