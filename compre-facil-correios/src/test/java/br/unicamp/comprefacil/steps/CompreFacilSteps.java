@@ -271,6 +271,7 @@ public class CompreFacilSteps {
 	@Then("^ViaCEP API returns \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"$")
 	public void viacep_API_returns(String cep, String logradouro, String complemento, String bairro, String localidade,
 			String uf, String ibge, String gia) throws Throwable {
+		Mockito.verify(this.correiosDAOMock, Mockito.times(1)).salvaEndereco(toEndereco);
 		WireMock.verify(1, WireMock.getRequestedFor(urlEqualTo(url)));
 		assertEquals(toEndereco.getCep().replace("-", ""), cep);
 		assertEquals(toEndereco.getLogradouro(), logradouro);
