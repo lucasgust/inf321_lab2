@@ -30,10 +30,10 @@ Scenario Outline: Calculating freight and deadline - API Integration returns Err
 	
 	Examples:
 		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|sCodigo 		| sValor	| sPrazoEntrega | sValorMaoPropria | sValorAvisoRecebimento	| sValorDeclarado| sEntregaDomiciliar | sEntregaSabado | sErro | sMsgErro 													 |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |1		 |150			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -15   | O comprimento não pode ser maior que 105 cm				 |
+		|		   |		|40010	   |13495-000 |13417-780  |100	  |1		 |150			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -15   | O comprimento nï¿½o pode ser maior que 105 cm				 |
 		|		   |		|40010	   |13495-000 |13417-780  |100	  |2		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	2			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -33   | Sistema temporariamente fora do ar. Favor tentar mais tarde |
-		|		   |		|40010	   |13495-xx5 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -2	   | CEP de origem inválido								   	     |
-		|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|-1	      |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00	       | 	0,00		 		| 0,00		 	 |	S				  |	S			   | -14   | Altura inválida	   								   	     |
+		|		   |		|40010	   |13495-xx5 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -2	   | CEP de origem invï¿½lido								   	     |
+		|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|-1	      |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00	       | 	0,00		 		| 0,00		 	 |	S				  |	S			   | -14   | Altura invï¿½lida	   								   	     |
 	
 	
 Scenario Outline: Getting address - API Integration
@@ -45,7 +45,7 @@ Scenario Outline: Getting address - API Integration
 
 	Examples:
 	|cep		|logradouro			|complemento				|bairro		|localidade		|uf	|ibge	|gia	|
-	|01001000	|Praca da Se		|lado impar					|Se			|Sao Paulo		|SP	|3550308|1004	|
+	|01001000	|PraÃ§a da SÃ©		|lado Ã­mpar					|SÃ©			|SÃ£o Paulo		|SP	|3550308|1004	|
 	
 Scenario: Empty zip code 
 	Given I do not have a zip code "<cep>"  

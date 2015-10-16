@@ -44,6 +44,8 @@ public class CompreFacilSteps {
     	correiosDAOMock = Mockito.mock(CorreiosDAO.class);
     	dadosDeEntregaMock = Mockito.mock(DadosDeEntregaDAO.class);
     	
+
+    	
     	correiosService = new CorreiosServiceImpl();
     	correiosService.setCorreiosDAO(correiosDAOMock);
     	correiosService.setDadosDeEntregaDAO(dadosDeEntregaMock);
@@ -120,7 +122,7 @@ public class CompreFacilSteps {
 	 * @throws Throwable
 	 * 
 	 * Adicionei este step para realizar o Mock de salvar os dados
-	 * creio que talvez seja necessário add algum assertThat
+	 * creio que talvez seja necessï¿½rio add algum assertThat
 	 */
 	@Then("^save data in database (\\d+) (\\d+)$")
 	public void save_data_in_database(int sPrazoEntrega, double sValor) throws Throwable {

@@ -8,11 +8,11 @@ public class EnderecoTO {
 	protected String bairro;
 	protected String localidade;
 	protected String uf;
-	protected long ibge;
+	protected String ibge;
 	protected int gia;
 	
 	public EnderecoTO(String cep, String logradouro, String complemento,
-			String bairro, String localidade, String uf, long ibge, int gia) {
+			String bairro, String localidade, String uf, String ibge, int gia) {
 		super();
 		this.cep = cep;
 		this.logradouro = logradouro;
@@ -48,7 +48,7 @@ public class EnderecoTO {
 		return uf;
 	}
 
-	public long getIbge() {
+	public String getIbge() {
 		return ibge;
 	}
 
