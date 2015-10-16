@@ -8,9 +8,9 @@ Scenario Outline: Calculating freight and deadline - API Integration
 	And User types "<sCepDestino>"
 	When User press button to calculate freight
 	And system connects to Correios API
-	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<sCepDestino>" <nVlPeso> <nCdFormato> <nVlComprimento> <nVlAltura> <nVlLargura> <nVlDiametro> "<sCdMaoPropria>" <nVlValorDeclarado> "<sCdAvisoRecebimento>"
-	Then correios API returns "<sCodigo>" <sValor> <sPrazoEntrega> <sValorMaoPropria> <sValorAvisoRecebimento> <sValorDeclarado> "<sEntregaDomiciliar>" "<sEntregaSabado>" "<sErro>" "<sMsgErro>"
-	And save data in database <sPrazoEntrega> <sValor>
+	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<nVlPeso>" "<nCdFormato>" "<nVlComprimento>" "<nVlAltura>" "<nVlLargura>" "<nVlDiametro>" "<sCdMaoPropria>" "<nVlValorDeclarado>" "<sCdAvisoRecebimento>"
+	Then correios API returns "<sCodigo>" "<sValor>" "<sPrazoEntrega>" "<sValorMaoPropria>" "<sValorAvisoRecebimento>" "<sValorDeclarado>" "<sEntregaDomiciliar>" "<sEntregaSabado>" "<sErro>" "<sMsgErro>"
+	And save data in database "<sPrazoEntrega>" "<sValor>"
 	
 	Examples:
 		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|sCodigo 		| sValor	| sPrazoEntrega | sValorMaoPropria | sValorAvisoRecebimento	| sValorDeclarado| sEntregaDomiciliar | sEntregaSabado | sErro | sMsgErro |
@@ -25,8 +25,8 @@ Scenario Outline: Calculating freight and deadline - API Integration returns Err
 	And at least one field is not valid
 	When User press button to calculate freight
 	And system connects to Correios API
-	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" <nVlPeso> <nCdFormato> <nVlComprimento> <nVlAltura> <nVlLargura> <nVlDiametro> "<sCdMaoPropria>" <nVlValorDeclarado> "<sCdAvisoRecebimento>"
-	Then correios API returns "<sCodigo>" <sValor> <sPrazoEntrega> <sValorMaoPropria> <sValorAvisoRecebimento> <sValorDeclarado> "<sEntregaDomiciliar>" "<sEntregaSabado>" "<sErro>" "<sMsgErro>"
+	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<nVlPeso>" "<nCdFormato>" "<nVlComprimento>" "<nVlAltura>" "<nVlLargura>" "<nVlDiametro>" "<sCdMaoPropria>" "<nVlValorDeclarado>" "<sCdAvisoRecebimento>"
+	Then correios API returns "<sCodigo>" "<sValor>" "<sPrazoEntrega>" "<sValorMaoPropria>" "<sValorAvisoRecebimento>" "<sValorDeclarado>" "<sEntregaDomiciliar>" "<sEntregaSabado>" "<sErro>" "<sMsgErro>"
 	
 	Examples:
 		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|sCodigo 		| sValor	| sPrazoEntrega | sValorMaoPropria | sValorAvisoRecebimento	| sValorDeclarado| sEntregaDomiciliar | sEntregaSabado | sErro | sMsgErro 													 |

@@ -15,8 +15,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import br.unicamp.comprefacil.dao.ConfiguracaoDAO;
 import br.unicamp.comprefacil.dao.CorreiosDAO;
 import br.unicamp.comprefacil.dao.DadosDeEntregaDAO;
+import br.unicamp.comprefacil.dao.impl.ConfiguracaoDAOImpl;
 import br.unicamp.comprefacil.dao.impl.CorreiosDAOImpl;
 import br.unicamp.comprefacil.dao.impl.DadosDeEntregaDAOImpl;
 import br.unicamp.comprefacil.exception.CorreiosException;
@@ -31,12 +33,14 @@ public class CorreiosServiceImpl implements CorreiosService {
 
 	private Gson gson = new Gson();
 	private CorreiosDAO correiosDAO;
+	private ConfiguracaoDAO configuracaoDAO;
 	private DadosDeEntregaDAO dadosDeEntregaDAO;
 
-	public static final String URL_CALC_PRECO_PRAZO = "http://localhost:8089/correios/ws/CalcPrecoPrazo.asmx/CalcPrecoPrazo";
-	public static final String URL_VALIDA_CEP = "http://localhost:8089/viacep/ws/{0}/json/";
+	public static final String RESOURCE_PRECO_PRAZO = "/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo";
+	public static final String RESOURCE_VALIDA_CEP = "/viacep/ws/{0}/json/";
 
 	public CorreiosServiceImpl() {
+		setConfiguracaoDAO(new ConfiguracaoDAOImpl());
 		setCorreiosDAO(new CorreiosDAOImpl());
 		setDadosDeEntregaDAO(new DadosDeEntregaDAOImpl());
 	}
@@ -57,8 +61,9 @@ public class CorreiosServiceImpl implements CorreiosService {
 		DadosEntregaCorreiosTO dadosEntrega = null;
 
 		try {
+			String dominio = this.configuracaoDAO.buscaPorGrupoEChave("CORREIOS", "DOMINIO");
 			HttpClient httpClient = getHttpClient();
-			HttpPost httpost = new HttpPost(URL_CALC_PRECO_PRAZO);
+			HttpPost httpost = new HttpPost(dominio + RESOURCE_PRECO_PRAZO);
 
 			List<NameValuePair> param = new ArrayList<NameValuePair>();
 
@@ -127,9 +132,10 @@ public class CorreiosServiceImpl implements CorreiosService {
 
 	public String validaCep(String cep) throws CorreiosException, NoHttpResponseException {
 		try {
+			String dominio = this.configuracaoDAO.buscaPorGrupoEChave("VIACEP", "DOMINIO");
 			HttpClient httpClient = getHttpClient();
 			Object[] params = { cep };
-			HttpGet httpget = new HttpGet(MessageFormat.format(URL_VALIDA_CEP, params));
+			HttpGet httpget = new HttpGet(MessageFormat.format(dominio + RESOURCE_VALIDA_CEP, params));
 			HttpResponse response = httpClient.execute(httpget);
 			
 			if (response.getStatusLine().getStatusCode() == 400) {
@@ -155,6 +161,10 @@ public class CorreiosServiceImpl implements CorreiosService {
 		EnderecoTO endereco = gson.fromJson(json, EnderecoTO.class);
 		correiosDAO.salvaEndereco(endereco);
 		return endereco;
+	}
+	
+	public void setConfiguracaoDAO(ConfiguracaoDAO configuracaoDAO) {
+		this.configuracaoDAO = configuracaoDAO;
 	}
 
 	public void setCorreiosDAO(CorreiosDAO dao) {

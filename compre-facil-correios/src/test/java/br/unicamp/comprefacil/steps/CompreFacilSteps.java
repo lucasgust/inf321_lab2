@@ -12,10 +12,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.mockito.Mockito;
 
-import com.github.tomakehurst.wiremock.admin.GetRequestCountTask;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.http.Fault;
-
+import br.unicamp.comprefacil.dao.ConfiguracaoDAO;
 import br.unicamp.comprefacil.dao.CorreiosDAO;
 import br.unicamp.comprefacil.dao.DadosDeEntregaDAO;
 import br.unicamp.comprefacil.service.CorreiosService;
@@ -23,6 +20,10 @@ import br.unicamp.comprefacil.service.impl.CorreiosServiceImpl;
 import br.unicamp.comprefacil.to.DadosEntregaCorreiosTO;
 import br.unicamp.comprefacil.to.EnderecoTO;
 import br.unicamp.comprefacil.to.EntregaTO;
+
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.http.Fault;
+
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -34,6 +35,7 @@ public class CompreFacilSteps {
 	private EnderecoTO toEndereco;
 	private EntregaTO entrega;
 	
+	private ConfiguracaoDAO configuracaoDAO;
 	private CorreiosDAO correiosDAOMock;
 	private DadosDeEntregaDAO dadosDeEntregaMock;
 	
@@ -47,21 +49,23 @@ public class CompreFacilSteps {
 	private Boolean temCampoInvalido;
 	private Boolean erroGrave;
 	
-//	@Rule
-//	public WireMockRule wireMockRule = new WireMockRule();
-	
     @Before
     public void setUp() {
+    	configuracaoDAO = Mockito.mock(ConfiguracaoDAO.class);
     	correiosDAOMock = Mockito.mock(CorreiosDAO.class);
     	dadosDeEntregaMock = Mockito.mock(DadosDeEntregaDAO.class);
     	
     	correiosService = new CorreiosServiceImpl();
+    	correiosService.setConfiguracaoDAO(configuracaoDAO);
     	correiosService.setCorreiosDAO(correiosDAOMock);
     	correiosService.setDadosDeEntregaDAO(dadosDeEntregaMock);
     	
     	throwable = null;
     	todosItensDefinidos = prontoParaBusca = temCampoInvalido = false;
     	entrega = new EntregaTO();
+    	
+    	Mockito.when(configuracaoDAO.buscaPorGrupoEChave("CORREIOS", "DOMINIO")).thenReturn("http://localhost:8089");
+    	Mockito.when(configuracaoDAO.buscaPorGrupoEChave("VIACEP", "DOMINIO")).thenReturn("http://localhost:8089");
     }
 
     @Given("^All items from sales order are settled$")
@@ -84,30 +88,37 @@ public class CompreFacilSteps {
         assertNotNull(correiosService);
     }
 
-    @When("^system sends the file with all mandatory tags \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) \"([^\"]*)\" (\\d+) \"([^\"]*)\"$") 
+    @When("^system sends the file with all mandatory tags \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"$") 
     public void system_sends_the_file_with_all_mandatory_tags(String nCdEmpresa, String sDsSenha,
-    		String nCdServico, String sCepOrigem, int nVlPeso, int nCdFormato, int nVlComprimento,
-    		int nVlAltura, int nVlLargura, int nVlDiametro, String sCdMaoPropria,
-    		int nVlValorDeclarado, String sCdAvisoRecebimento) throws Throwable {
+    		String nCdServico, String sCepOrigem, String nVlPeso, String nCdFormato, String nVlComprimento,
+    		String nVlAltura, String nVlLargura, String nVlDiametro, String sCdMaoPropria,
+    		String nVlValorDeclarado, String sCdAvisoRecebimento) throws Throwable {
     	this.entrega.setnCdEmpresa(nCdEmpresa);
     	this.entrega.setsDsSenha(sDsSenha);
     	this.entrega.setnCdServico(nCdServico);
     	this.entrega.setsCepOrigem(sCepOrigem);
-    	this.entrega.setnVlPeso(nVlPeso);
-    	this.entrega.setnCdFormato(nCdFormato);
-    	this.entrega.setnVlComprimento(nVlComprimento);
-    	this.entrega.setnVlAltura(nVlAltura);
-    	this.entrega.setnVlLargura(nVlLargura);
-    	this.entrega.setnVlDiametro(nVlDiametro);
+    	this.entrega.setnVlPeso(Integer.valueOf(nVlPeso));
+    	this.entrega.setnCdFormato(Integer.valueOf(nCdFormato));
+    	this.entrega.setnVlComprimento(Integer.valueOf(nVlComprimento));
+    	this.entrega.setnVlAltura(Integer.valueOf(nVlAltura));
+    	this.entrega.setnVlLargura(Integer.valueOf(nVlLargura));
+    	this.entrega.setnVlDiametro(Integer.valueOf(nVlDiametro));
     	this.entrega.setsCdMaoPropria(sCdMaoPropria);
-    	this.entrega.setnVlValorDeclarado(nVlValorDeclarado);
+    	this.entrega.setnVlValorDeclarado(Integer.valueOf(nVlValorDeclarado));
     	this.entrega.setsCdAvisoRecebimento(sCdAvisoRecebimento);
+    	/**
+    	 * TODO usar wiremock para busca nos correios antes do assert abaixo
+    	 * após definir o stub, fazer a chamada abaixo (descomentar código)
+    	*/
+//    	DadosEntregaCorreiosTO dadosDeEntrega = this.correiosService.buscaValorEPrazo(entrega);
+//    	Assert.assertNotNull(dadosDeEntrega);
+//    	Mockito.verify(configuracaoDAO, Mockito.times(1)).buscaPorGrupoEChave("CORREIOS", "DOMINIO");
     }
 
-	@Then("^correios API returns \"([^\"]*)\" (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"$")
-	public void correios_API_returns(String sCodigo, double sValor,
-			int sPrazoEntrega, double sValorMaoPropria,
-			double sValorAvisoRecebimento, double sValorDeclarado,
+    @Then("^correios API returns \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\" \"([^\"]*)\"$")
+	public void correios_API_returns(String sCodigo, String sValor,
+			String sPrazoEntrega, String sValorMaoPropria,
+			String sValorAvisoRecebimento, String sValorDeclarado,
 			String sEntregaDomiciliar, String sEntregaSabado, String sErro,
 			String sMsgErro) throws Throwable {
 		Assert.assertTrue(todosItensDefinidos);
@@ -119,8 +130,8 @@ public class CompreFacilSteps {
 			Assert.assertNotNull(sMsgErro);
 
 		} else {
-			Assert.assertNull(sErro);
-			Assert.assertNull(sMsgErro);
+			Assertions.assertThat(sErro).isEmpty();
+			Assertions.assertThat(sMsgErro).isEmpty();
 		}
 	}
 	
@@ -133,12 +144,11 @@ public class CompreFacilSteps {
 	 * Adicionei este step para realizar o Mock de salvar os dados
 	 * creio que talvez seja necessário add algum assertThat
 	 */
-	@Then("^save data in database (\\d+) (\\d+)$")
-	public void save_data_in_database(int sPrazoEntrega, double sValor) throws Throwable {
-		
+	@Then("^save data in database \"([^\"]*)\" \"([^\"]*)\"")
+	public void save_data_in_database(String sPrazoEntrega, String sValor) throws Throwable {
 		DadosEntregaCorreiosTO dadosEntregaTO = new DadosEntregaCorreiosTO();
-		dadosEntregaTO.setPrazo(sPrazoEntrega);
-		dadosEntregaTO.setValor(sValor);
+		dadosEntregaTO.setPrazo(Integer.valueOf(sPrazoEntrega));
+		dadosEntregaTO.setValor(Double.valueOf(sValor));
 		dadosDeEntregaMock.salvaDadosDeEntrega(dadosEntregaTO);
 	}
 	
@@ -207,6 +217,7 @@ public class CompreFacilSteps {
     public void system_sends_the_file_with_the_mandatory_tag(String cep) {
     	try {
         	toEndereco = this.correiosService.buscaEndereco(cep);
+        	Mockito.verify(configuracaoDAO, Mockito.times(1)).buscaPorGrupoEChave("VIACEP", "DOMINIO");
     	} catch (Exception e) {
     		erroGrave = e instanceof NoHttpResponseException;
     		throwable = e;
