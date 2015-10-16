@@ -28,8 +28,10 @@ Scenario Outline: Calculating freight and deadline - API Integration returns Err
 	
 	Examples:
 		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|  valor	| prazoEntrega 	| cErro | msgErro                                  |
-		|		   |		|40010     |          | 13417780  | 10    |1		 |20			|5		  |12		 |8			 |N			   |0				 |N					 |	0	    |		0		|  -888 |   Erro ao calcular tarifa                |
-		|		   |		|40010	   |13084971  | 13083872  | 15	  |2		 |30			|5		  |13		 |8			 |S			   |0				 |S			    	 |	0	    |		0		|  7    |   Servico indisponivel, tente mais tarde |  
+		|		   |		|40010     |          | 13417780  | 10    |1		 |20			|5		  |12		 |8			 |N			   |0				 |N					 |	0	    |		0		| -888  |   Erro ao calcular tarifa                |
+		|		   |		|40010	   |13084971  | 13083872  | 15	  |2		 |30			|5		  |13		 |8			 |S			   |0				 |S			    	 |	0	    |		0		|   7   |   Servico indisponivel, tente mais tarde |  
+        |		   |		|40010	   |130c497a  | 13083872  | 15	  |2		 |30			|5		  |13		 |8			 |S			   |0				 |S			    	 |	0	    |		0		|  -2   |   CEP de origem invalido                 |  
+        |		   |		|40010	   |13084971  | 130c497a  | 15	  |2		 |30			|5		  |13		 |8			 |S			   |0				 |S			    	 |	0	    |		0		|  -3   |   CEP de destino invalido                |  
 
 	
 Scenario Outline: Getting address - API Integration

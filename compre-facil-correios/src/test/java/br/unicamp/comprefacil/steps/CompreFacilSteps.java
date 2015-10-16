@@ -132,6 +132,7 @@ public class CompreFacilSteps {
 			stubFor(get(urlEqualTo(url))
 					.willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/xml").withBody(
 							"<?xml version=\"1.0\" encoding=\"utf-8\"?><cResultado xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://tempuri.org/\"><Servicos><cServico><Codigo>40010</Codigo><Valor>46,30</Valor><PrazoEntrega>1</PrazoEntrega><ValorMaoPropria>0,00</ValorMaoPropria><ValorAvisoRecebimento>0,00</ValorAvisoRecebimento><ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar><EntregaSabado>S</EntregaSabado><Erro>0</Erro><MsgErro /><ValorSemAdicionais>46,30</ValorSemAdicionais><obsFim /></cServico></Servicos></cResultado>")));
+		
 		//Erro de cálculo de tarifa (problema de prazo e/ou valor)
 		} else if (this.entrega.getnCdEmpresa().equals("") && this.entrega.getsDsSenha().equals("")
 				&& this.entrega.getnCdServico().equals("40010") && this.entrega.getsCepDestino().equals("13417780")
@@ -155,7 +156,33 @@ public class CompreFacilSteps {
 			stubFor(get(urlEqualTo(url))
 					.willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/xml").withBody(
 							"<cResultado xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://tempuri.org/\"><Servicos><cServico><Codigo>40010</Codigo><Valor>0</Valor><PrazoEntrega>0</PrazoEntrega><ValorMaoPropria>0</ValorMaoPropria><ValorAvisoRecebimento>0</ValorAvisoRecebimento><ValorValorDeclarado>0</ValorValorDeclarado><EntregaDomiciliar></EntregaDomiciliar><EntregaSabado></EntregaSabado><Erro>7</Erro><MsgErro>Servico indisponivel, tente mais tarde</MsgErro><ValorSemAdicionais>0</ValorSemAdicionais><obsFim /></cServico></Servicos></cResultado>")));
-		} 
+		
+		//Cep de origem inválido
+		} else if (this.entrega.getnCdEmpresa().equals("") && this.entrega.getsDsSenha().equals("")
+				&& this.entrega.getnCdServico().equals("40010") && this.entrega.getsCepOrigem().equals("130c497a")
+				&& this.entrega.getsCepDestino().equals("13083872") && this.entrega.getnVlPeso() == 15
+				&& this.entrega.getnCdFormato() == 2 && this.entrega.getnVlComprimento() == 30
+				&& this.entrega.getnVlAltura() == 5 && this.entrega.getnVlLargura() == 13
+				&& this.entrega.getnVlDiametro() == 8 && this.entrega.getsCdMaoPropria().equals("S")
+				&& this.entrega.getnVlValorDeclarado() == 0 && this.entrega.getsCdAvisoRecebimento().equals("S")) {
+			stubFor(get(urlEqualTo(url))
+					.willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/xml").withBody(
+							"<cResultado xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://tempuri.org/\"><Servicos><cServico><Codigo>40010</Codigo><Valor>0</Valor><PrazoEntrega>0</PrazoEntrega><ValorMaoPropria>0</ValorMaoPropria><ValorAvisoRecebimento>0</ValorAvisoRecebimento><ValorValorDeclarado>0</ValorValorDeclarado><EntregaDomiciliar></EntregaDomiciliar><EntregaSabado></EntregaSabado><Erro>-2</Erro><MsgErro>CEP de origem invalido</MsgErro><ValorSemAdicionais>0</ValorSemAdicionais><obsFim /></cServico></Servicos></cResultado>")));
+		
+		//Cep de destino inválido
+		} else if (this.entrega.getnCdEmpresa().equals("") && this.entrega.getsDsSenha().equals("")
+				&& this.entrega.getnCdServico().equals("40010") && this.entrega.getsCepOrigem().equals("13084971")
+				&& this.entrega.getsCepDestino().equals("130c497a") && this.entrega.getnVlPeso() == 15
+				&& this.entrega.getnCdFormato() == 2 && this.entrega.getnVlComprimento() == 30
+				&& this.entrega.getnVlAltura() == 5 && this.entrega.getnVlLargura() == 13
+				&& this.entrega.getnVlDiametro() == 8 && this.entrega.getsCdMaoPropria().equals("S")
+				&& this.entrega.getnVlValorDeclarado() == 0 && this.entrega.getsCdAvisoRecebimento().equals("S")) {
+			stubFor(get(urlEqualTo(url))
+					.willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/xml").withBody(
+							"<cResultado xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://tempuri.org/\"><Servicos><cServico><Codigo>40010</Codigo><Valor>0</Valor><PrazoEntrega>0</PrazoEntrega><ValorMaoPropria>0</ValorMaoPropria><ValorAvisoRecebimento>0</ValorAvisoRecebimento><ValorValorDeclarado>0</ValorValorDeclarado><EntregaDomiciliar></EntregaDomiciliar><EntregaSabado></EntregaSabado><Erro>-3</Erro><MsgErro>CEP de destino invalido</MsgErro><ValorSemAdicionais>0</ValorSemAdicionais><obsFim /></cServico></Servicos></cResultado>")));
+		}
+		
+
 
 		dadosEntrega = this.correiosService.buscaValorEPrazo(entrega);
 		Mockito.verify(configuracaoDAO, Mockito.times(1)).buscaPorGrupoEChave("CORREIOS", "DOMINIO");
