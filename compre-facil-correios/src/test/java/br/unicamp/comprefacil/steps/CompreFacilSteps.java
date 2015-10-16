@@ -185,6 +185,7 @@ public class CompreFacilSteps {
 
 
 		dadosEntrega = this.correiosService.buscaValorEPrazo(entrega);
+		Assert.assertNotNull(dadosEntrega);
 		Mockito.verify(configuracaoDAO, Mockito.times(1)).buscaPorGrupoEChave("CORREIOS", "DOMINIO");
 
 	}
