@@ -2,6 +2,8 @@ package br.unicamp.comprefacil.exception;
 
 public class CorreiosException extends Exception {
 
+	private static final long serialVersionUID = -1093056951889548084L;
+
 	public CorreiosException(String message, Throwable cause) {
 		super(message, cause);
 	}

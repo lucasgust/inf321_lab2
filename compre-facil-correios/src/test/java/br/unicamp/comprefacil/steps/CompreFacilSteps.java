@@ -45,9 +45,6 @@ public class CompreFacilSteps {
 
 	private String url;
 
-	private Boolean todosItensDefinidos;
-	private Boolean prontoParaBusca;
-	private Boolean temCampoInvalido;
 	private Boolean erroGrave;
 
 	@Before
@@ -62,7 +59,6 @@ public class CompreFacilSteps {
 		correiosService.setDadosDeEntregaDAO(dadosDeEntregaMock);
 
 		throwable = null;
-		todosItensDefinidos = prontoParaBusca = temCampoInvalido = false;
 		entrega = new EntregaTO();
 
 		Mockito.when(configuracaoDAO.buscaPorGrupoEChave("CORREIOS", "DOMINIO")).thenReturn("http://localhost:8089");
@@ -71,7 +67,7 @@ public class CompreFacilSteps {
 
 	@Given("^All items from sales order are settled$")
 	public void all_items_from_sales_order_are_settled() throws Throwable {
-		todosItensDefinidos = true;
+		Assert.assertTrue(true);
 	}
 
 	@Given("^User types \"([^\"]*)\"$")
@@ -81,7 +77,7 @@ public class CompreFacilSteps {
 
 	@When("^User press button to calculate freight$")
 	public void user_press_button_to_calculate_freight() throws Throwable {
-		prontoParaBusca = true;
+		Assert.assertTrue(true);
 	}
 
 	@When("^system connects to Correios API$")
@@ -211,12 +207,12 @@ public class CompreFacilSteps {
 		DadosEntregaCorreiosTO dadosEntregaTO = new DadosEntregaCorreiosTO();
 		dadosEntregaTO.setPrazo(prazoEntrega);
 		dadosEntregaTO.setValor(valor);
-		dadosDeEntregaMock.salvaDadosDeEntrega(dadosEntregaTO);
+		Mockito.verify(this.dadosDeEntregaMock, Mockito.times(1)).salvaDadosDeEntrega(dadosEntregaTO);
 	}
 
 	@Given("^at least one field is not valid$")
 	public void at_least_one_field_is_not_valid() throws Throwable {
-		temCampoInvalido = true;
+		Assert.assertTrue(true);
 	}
 
 	@Given("^I have a valid and registered zip code \"([^\"]*)\"$")

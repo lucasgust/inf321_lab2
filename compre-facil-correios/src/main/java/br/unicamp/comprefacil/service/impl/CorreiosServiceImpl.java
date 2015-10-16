@@ -1,19 +1,13 @@
 package br.unicamp.comprefacil.service.impl;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import br.unicamp.comprefacil.dao.ConfiguracaoDAO;
@@ -106,6 +100,8 @@ public class CorreiosServiceImpl implements CorreiosService {
 			dadosEntrega.setPrazo(prazo);
 			dadosEntrega.setErro(erro);
 			dadosEntrega.setMsg(msg);
+			
+			this.dadosDeEntregaDAO.salvaDadosDeEntrega(dadosEntrega);
 
 		} catch (Exception e) {
 			throw new CorreiosException(e);
