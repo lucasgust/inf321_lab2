@@ -69,10 +69,6 @@ public class CorreiosServiceImpl implements CorreiosService {
 			HttpGet httpget = new HttpGet(dominio + RESOURCE_PRECO_PRAZO);
 
 			HttpResponse response = httpClient.execute(httpget);
-//			if (response.getStatusLine().getStatusCode() == 200) {
-//			throw new CorreiosException(
-//			 "Código de retorno diferente de Http OK");
-//			}
 
 			String responseXML = EntityUtils.toString(response.getEntity());
 
@@ -110,8 +106,6 @@ public class CorreiosServiceImpl implements CorreiosService {
 			dadosEntrega.setPrazo(prazo);
 			dadosEntrega.setErro(erro);
 			dadosEntrega.setMsg(msg);
-
-			// dadosDeEntregaDAO.salvaDadosDeEntrega(dadosEntrega);
 
 		} catch (Exception e) {
 			throw new CorreiosException(e);
