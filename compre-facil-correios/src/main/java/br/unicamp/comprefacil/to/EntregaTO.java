@@ -16,6 +16,7 @@ public class EntregaTO {
 	private String sCdMaoPropria;
 	private int nVlValorDeclarado;
 	private String sCdAvisoRecebimento;
+
 	
 	public String getnCdEmpresa() {
 		return nCdEmpresa;

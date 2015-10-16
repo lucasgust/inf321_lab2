@@ -8,33 +8,29 @@ Scenario Outline: Calculating freight and deadline - API Integration
 	And User types "<sCepDestino>"
 	When User press button to calculate freight
 	And system connects to Correios API
-	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<nVlPeso>" "<nCdFormato>" "<nVlComprimento>" "<nVlAltura>" "<nVlLargura>" "<nVlDiametro>" "<sCdMaoPropria>" "<nVlValorDeclarado>" "<sCdAvisoRecebimento>"
-	Then correios API returns "<sCodigo>" "<sValor>" "<sPrazoEntrega>" "<sValorMaoPropria>" "<sValorAvisoRecebimento>" "<sValorDeclarado>" "<sEntregaDomiciliar>" "<sEntregaSabado>" "<sErro>" "<sMsgErro>"
-	And save data in database "<sPrazoEntrega>" "<sValor>"
+	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<sCepDestino>" "<nVlPeso>" "<nCdFormato>" "<nVlComprimento>" "<nVlAltura>" "<nVlLargura>" "<nVlDiametro>" "<sCdMaoPropria>" "<nVlValorDeclarado>" "<sCdAvisoRecebimento>"
+	Then correios API returns "<valor>" "<prazoEntrega>" "<cErro>" "<msgErro>"
+	And save data in database "<prazoEntrega>" "<valor>"
 	
-	Examples:
-		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|sCodigo 		| sValor	| sPrazoEntrega | sValorMaoPropria | sValorAvisoRecebimento	| sValorDeclarado| sEntregaDomiciliar | sEntregaSabado | sErro | sMsgErro |
-		|		   |		|40010     |13495-000 |13417-780  |100	  |1		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13.20	|	1			|	 0.00		   | 	0.00		 		| 0.00			 |	S				  |	S			   |	   |	   	  |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |2		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13.20	|	2			|	 0.00		   | 	0.00		 		| 0.00			 |	S				  |	S			   |	   |	   	  |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13.20	|	1			|	 0.00		   | 	0.00		 		| 0.00			 |	S				  |	S			   |	   |	   	  |
-		|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13.20	|	1			|	 0.00	       | 	0.00		 		| 0.00		 	 |	S				  |	S			   |	   |	   	  |
-
+		Examples:
+		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|  valor	| prazoEntrega 	| cErro | msgErro |
+		|		   |		|40010     |13495000  | 13417780  | 10    |1		 |20			|5		  |12		 |8			 |N			   |0				 |N					 |	31,30	|		2		|  0   |          |
+		|		   |		|40010	   |13084971  | 13083872  | 15	  |2		 |30			|5		  |13		 |8			 |N			   |0				 |N					 |	46,30	|		1		|  0   |          |
+		
 Scenario Outline: Calculating freight and deadline - API Integration returns Error
 	Given All items from sales order are settled
 	And User types "<sCepDestino>"
 	And at least one field is not valid
 	When User press button to calculate freight
 	And system connects to Correios API
-	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<nVlPeso>" "<nCdFormato>" "<nVlComprimento>" "<nVlAltura>" "<nVlLargura>" "<nVlDiametro>" "<sCdMaoPropria>" "<nVlValorDeclarado>" "<sCdAvisoRecebimento>"
-	Then correios API returns "<sCodigo>" "<sValor>" "<sPrazoEntrega>" "<sValorMaoPropria>" "<sValorAvisoRecebimento>" "<sValorDeclarado>" "<sEntregaDomiciliar>" "<sEntregaSabado>" "<sErro>" "<sMsgErro>"
+	And system sends the file with all mandatory tags "<nCdEmpresa>" "<sDsSenha>" "<nCdServico>" "<sCepOrigem>" "<sCepDestino>" "<nVlPeso>" "<nCdFormato>" "<nVlComprimento>" "<nVlAltura>" "<nVlLargura>" "<nVlDiametro>" "<sCdMaoPropria>" "<nVlValorDeclarado>" "<sCdAvisoRecebimento>"
+	Then correios API returns "<valor>" "<prazoEntrega>" "<cErro>" "<msgErro>"
 	
 	Examples:
-		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|sCodigo 		| sValor	| sPrazoEntrega | sValorMaoPropria | sValorAvisoRecebimento	| sValorDeclarado| sEntregaDomiciliar | sEntregaSabado | sErro | sMsgErro 													 |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |1		 |150			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -15   | O comprimento não pode ser maior que 105 cm				 |
-		|		   |		|40010	   |13495-000 |13417-780  |100	  |2		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	2			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -33   | Sistema temporariamente fora do ar. Favor tentar mais tarde |
-		|		   |		|40010	   |13495-xx5 |13417-780  |100	  |3		 |15			|5		  |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00		   | 	0,00		 		| 0,00			 |	S				  |	S			   | -2	   | CEP de origem inválido								   	     |
-		|		   |		|40045	   |13495-000 |13417-780  |100	  |1		 |15			|-1	      |6		 |8			 |N			   |0				 |N					 |	40010   	|	13,20	|	1			|	 0,00	       | 	0,00		 		| 0,00		 	 |	S				  |	S			   | -14   | Altura inválida	   								   	     |
-	
+		|nCdEmpresa|sDsSenha|nCdServico|sCepOrigem|sCepDestino|nVlPeso|nCdFormato|nVlComprimento|nVlAltura|nVlLargura|nVlDiametro|sCdMaoPropria|nVlValorDeclarado|sCdAvisoRecebimento|  valor	| prazoEntrega 	| cErro | msgErro                                  |
+		|		   |		|40010     |          | 13417780  | 10    |1		 |20			|5		  |12		 |8			 |N			   |0				 |N					 |	0	    |		0		|  -888 |   Erro ao calcular tarifa                |
+		|		   |		|40010	   |13084971  | 13083872  | 15	  |2		 |30			|5		  |13		 |8			 |S			   |0				 |S			    	 |	0	    |		0		|  7    |   Servico indisponivel, tente mais tarde |  
+
 	
 Scenario Outline: Getting address - API Integration
 	Given I have a valid and registered zip code "<cep>"

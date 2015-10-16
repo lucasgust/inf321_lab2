@@ -1,4 +1,5 @@
 package br.unicamp.comprefacil.service.impl;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,66 +63,55 @@ public class CorreiosServiceImpl implements CorreiosService {
 
 		try {
 			String dominio = this.configuracaoDAO.buscaPorGrupoEChave("CORREIOS", "DOMINIO");
+
 			HttpClient httpClient = getHttpClient();
-			HttpPost httpost = new HttpPost(dominio + RESOURCE_PRECO_PRAZO);
 
-			List<NameValuePair> param = new ArrayList<NameValuePair>();
+			HttpGet httpget = new HttpGet(dominio + RESOURCE_PRECO_PRAZO);
 
-			param.add(new BasicNameValuePair("nCdEmpresa", dadosParaEntrega
-					.getnCdEmpresa()));
-			param.add(new BasicNameValuePair("sDsSenha", dadosParaEntrega
-					.getsDsSenha()));
-			param.add(new BasicNameValuePair("nCdServico", dadosParaEntrega
-					.getnCdServico()));
-			param.add(new BasicNameValuePair("sCepOrigem", dadosParaEntrega
-					.getsCepOrigem()));
-			param.add(new BasicNameValuePair("sCepDestino", dadosParaEntrega
-					.getsCepDestino()));
-			param.add(new BasicNameValuePair("nVlPeso", dadosParaEntrega
-					.getnVlPeso() + ""));
-			param.add(new BasicNameValuePair("nCdFormato", dadosParaEntrega
-					.getnCdFormato() + ""));
-			param.add(new BasicNameValuePair("nVlComprimento", dadosParaEntrega
-					.getnVlComprimento() + ""));
-			param.add(new BasicNameValuePair("nVlAltura", dadosParaEntrega
-					.getnVlAltura() + ""));
-			param.add(new BasicNameValuePair("nVlLargura", dadosParaEntrega
-					.getnVlLargura() + ""));
-			param.add(new BasicNameValuePair("nVlDiametro", dadosParaEntrega
-					.getnVlDiametro() + ""));
-			param.add(new BasicNameValuePair("sCdMaoPropria", dadosParaEntrega
-					.getsCdMaoPropria()));
-			param.add(new BasicNameValuePair("nVlValorDeclarado",
-					dadosParaEntrega.getnVlValorDeclarado() + ""));
-			param.add(new BasicNameValuePair("sCdAvisoRecebimento",
-					dadosParaEntrega.getsCdAvisoRecebimento()));
-
-			httpost.setEntity(new UrlEncodedFormEntity(param));
-
-			HttpResponse response = httpClient.execute(httpost);
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new CorreiosException(
-						"Código de retorno diferente de Http OK");
-			}
+			HttpResponse response = httpClient.execute(httpget);
+//			if (response.getStatusLine().getStatusCode() == 200) {
+//			throw new CorreiosException(
+//			 "Código de retorno diferente de Http OK");
+//			}
 
 			String responseXML = EntityUtils.toString(response.getEntity());
+
+			System.out.println(responseXML);
 
 			int indexValInicial = responseXML.indexOf("<Valor>");
 			int indexValFinal = responseXML.indexOf("</Valor>");
 			int indexPrazoInicial = responseXML.indexOf("<PrazoEntrega>");
 			int indexPrazoFinal = responseXML.indexOf("</PrazoEntrega>");
+			int indexErroInicial = responseXML.indexOf("<Erro>");
+			int indexErroFinal = responseXML.indexOf("</Erro>");
+			
 
 			String valor = responseXML.substring(indexValInicial, indexValFinal);
 			valor = valor.replace("<Valor>", "").trim();
+			
 			String prazo = responseXML.substring(indexPrazoInicial, indexPrazoFinal);
 			prazo = prazo.replace("<PrazoEntrega>", "").trim();
-
+					
+			String erro = responseXML.substring(indexErroInicial, indexErroFinal);
+			erro = erro.replace("<Erro>", "").trim();
+			
+			String msg = "";
+			
+			if(!erro.equals("0")){
+				int indexMsgInicial = responseXML.indexOf("<MsgErro>");
+				int indexMsgFinal = responseXML.indexOf("</MsgErro>");
+				msg = responseXML.substring(indexMsgInicial, indexMsgFinal);
+				msg = msg.replace("<MsgErro>", "").trim();
+			}
+		
 			dadosEntrega = new DadosEntregaCorreiosTO();
 
-			dadosEntrega.setValor(Double.valueOf(valor.replace(",", ".")));
-			dadosEntrega.setPrazo(Integer.valueOf(prazo));
+			dadosEntrega.setValor(valor);
+			dadosEntrega.setPrazo(prazo);
+			dadosEntrega.setErro(erro);
+			dadosEntrega.setMsg(msg);
 
-			dadosDeEntregaDAO.salvaDadosDeEntrega(dadosEntrega);
+			// dadosDeEntregaDAO.salvaDadosDeEntrega(dadosEntrega);
 
 		} catch (Exception e) {
 			throw new CorreiosException(e);
@@ -137,17 +127,18 @@ public class CorreiosServiceImpl implements CorreiosService {
 			Object[] params = { cep };
 			HttpGet httpget = new HttpGet(MessageFormat.format(dominio + RESOURCE_VALIDA_CEP, params));
 			HttpResponse response = httpClient.execute(httpget);
-			
+
 			if (response.getStatusLine().getStatusCode() == 400) {
-				throw new CorreiosException("O CEP nao foi informado ou eh invalido. O formato correto eh composto por 8 digitos.");
+				throw new CorreiosException(
+						"O CEP nao foi informado ou eh invalido. O formato correto eh composto por 8 digitos.");
 			}
-			
+
 			String responseText = EntityUtils.toString(response.getEntity());
 
 			if (responseText.equals("{\"erro\": true}")) {
 				throw new CorreiosException("O CEP informado nao foi encontrado.");
 			}
-			
+
 			return responseText;
 		} catch (NoHttpResponseException e) {
 			throw new NoHttpResponseException("Servico indisponivel. Por favor, tente mais tarde.");
@@ -162,7 +153,7 @@ public class CorreiosServiceImpl implements CorreiosService {
 		correiosDAO.salvaEndereco(endereco);
 		return endereco;
 	}
-	
+
 	public void setConfiguracaoDAO(ConfiguracaoDAO configuracaoDAO) {
 		this.configuracaoDAO = configuracaoDAO;
 	}
