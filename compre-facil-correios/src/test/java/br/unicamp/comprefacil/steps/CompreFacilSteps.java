@@ -9,7 +9,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.mockito.Mockito;
+
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import br.unicamp.comprefacil.dao.CorreiosDAO;
 import br.unicamp.comprefacil.dao.DadosDeEntregaDAO;
@@ -39,12 +42,13 @@ public class CompreFacilSteps {
 	private Boolean prontoParaBusca;
 	private Boolean temCampoInvalido;
 	
+//	@Rule
+//	public WireMockRule wireMockRule = new WireMockRule();
+	
     @Before
     public void setUp() {
     	correiosDAOMock = Mockito.mock(CorreiosDAO.class);
     	dadosDeEntregaMock = Mockito.mock(DadosDeEntregaDAO.class);
-    	
-
     	
     	correiosService = new CorreiosServiceImpl();
     	correiosService.setCorreiosDAO(correiosDAOMock);
@@ -214,4 +218,26 @@ public class CompreFacilSteps {
     public void system_returns_an_empty_address_object() throws Throwable {
     	Assertions.assertThat(toEndereco).isNull();
     }
+    
+    @Given("^CEP address endpoint and a \"([^\"]*)\"$")
+    public void cep_address_endpoint_and_a(String msg) throws Throwable {
+    	assertEquals(msg, throwable.getMessage());	
+    }
+
+    /*
+    @Then("exemplo")
+    public void the_post_office_API_should_return(String result) throws Throwable {
+    	stubFor(get(urlMatching("/correio/exemploendpoint/exemploendpoint"))
+    			.withQueryParam("p", equalTo("100"))
+    				.willReturn(
+    					aResponse()
+    					.withStatus(200)
+    					.withHeader("Content-Type", "application/xml")
+    					.withBody(XmlHelper.getErrorBody(100010, "x", "mensagem"))));
+    	// o 1 é a quantidade de acesso nesse endpoint
+    	WireMock.verify(1, getRequestedFor(urlMatching("/correio/exemploendpoint/exemploendpoint"))
+    			.withQueryParam("p", equalTo("100")));
+    }
+    */
+    
 }

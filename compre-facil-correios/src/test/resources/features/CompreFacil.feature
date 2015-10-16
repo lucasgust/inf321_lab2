@@ -74,3 +74,16 @@ Scenario Outline: Address not found
 	|cep		|
 	|00000000	|
 	|99999999	|
+	
+Scenario Outline: CEP address endpoint not found
+    Given CEP address endpoint and a "<cep>"
+    And VIACEP service unavailable
+    When The system receives any "<cep>"
+    Then should show an error with a message: "Serviço indisponível, por favor tentar mais tarde!"
+	
+	Examples:
+	|cep		|
+	|00000000	|
+	|99999999	|
+		
+	
